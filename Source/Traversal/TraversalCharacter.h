@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+//#include "MotionWarpingComponent.h"
 #include "TraversalCharacter.generated.h"
 
 class USpringArmComponent;
@@ -50,6 +51,7 @@ class ATraversalCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* TraversalAction;
 
+	//UMotionWarpingComponent* MotionWarpingComponent;
 
 	float Depth = 0;
 
@@ -91,6 +93,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS")
 	TSubclassOf<UGameplayAbility> MantleAbility;
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
 	float DistanceInputAction = 250;

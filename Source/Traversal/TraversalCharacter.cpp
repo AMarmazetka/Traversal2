@@ -9,6 +9,8 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "TraversalGameplayTags.h"
 #include "TraversalObject.h"
 #include "TraversalObjects.h"
 #include "InputActionValue.h"
@@ -192,8 +194,10 @@ void ATraversalCharacter::Mantling() {
 		UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] Error AbilitySystemComponent "));
 		return;
 	}
-
-	AbilitySystemComponent->TryActivateAbilityByClass(MantleAbility);
+	FGameplayEventData EventData;
+	EventData.EventMagnitude = Height;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, TAG_Mantle, EventData);
+	//AbilitySystemComponent->TryActivateAbilityByClass(MantleAbility);
 }
 
 void ATraversalCharacter::FindTriversalObject() {
@@ -201,6 +205,7 @@ void ATraversalCharacter::FindTriversalObject() {
 	const FVector StartPoint = GetActorLocation();
 	const FVector ForwardVector = GetActorForwardVector();
 	const FVector EndPoint = StartPoint + ForwardVector * DistanceInputAction;
+
 	FHitResult HitRes;
 	FCollisionQueryParams IgnorCharacter;
 	IgnorCharacter.AddIgnoredActor(this);

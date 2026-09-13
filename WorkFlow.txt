@@ -159,13 +159,18 @@ FindTriversalObject() - Used Trace for Find Objects, return true if actor implem
 FindHeightTargetActor(FHitResult HitRes) - finding HeightObject and return this
 Step3:
 void UGA_Mantle::ActivateAbility = created Montage for playAnimation. 
-Fixed Root Motion. Z work too. All works make. Next I need to make extension and impruve 
+Fixed Root Motion. Z work too. All works make. Next I need to make extension and improve 
 Step4: 
 FindDepthTargetActor(FHitResult HitRes) - DepthOfObject
-Travers(const FInputActionValue& Value) - full decide what GA strting
+Travers(const FInputActionValue& Value) - full decide what GA string
 GA_Vautl() is working
 GA_Mantl() is working
 +++MVP ready 13.09
+Step5:
+ChangeActivate MantleAbility on Gameplay SendGameplayEventToActor
+Create one NativeTag
+Construct on Mantl Ability
+TraversalGameplayTag need for SendGameplayEventToActor
 
 -----------------------------------------------------------------------------------------------------------------------------------
 Edge
@@ -181,5 +186,5 @@ Edge
 -Z need off Mode_Walking because CHaracter always snap on floor, apply Mode_Fly and return standart mode after animation
 -in Theory Finding parametrs Depth and Height can make not true result, for this really rare happens you can make additional check
 -You can use SendGameplayEventToActor for send some parameters and create FEventParam but it's need for learning. The same GameplayEffects, needs more time
-+++
+-Ability tags is old. in the future change this on AssetTags
 

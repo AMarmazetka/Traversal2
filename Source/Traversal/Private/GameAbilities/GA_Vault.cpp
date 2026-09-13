@@ -11,6 +11,7 @@ void UGA_Vault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) {
 		UE_LOG(LogTemp, Warning, TEXT("[UGA_Vault] Error Commit"));
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
 	}
 
 	Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());

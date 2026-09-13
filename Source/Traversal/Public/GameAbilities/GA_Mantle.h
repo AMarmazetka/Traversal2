@@ -5,8 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Abilities/GameplayAbility.h"
-#include "../../TraversalCharacter.h"
+#include "TraversalGameplayTags.h"
 #include "GA_Mantle.generated.h"
+
 
 /**
  * 
@@ -17,14 +18,19 @@ class TRAVERSAL_API UGA_Mantle : public UGameplayAbility
 	GENERATED_BODY()
 	
 public:
+	UGA_Mantle();
+
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MantleAnim")
 	TObjectPtr<UAnimMontage> MantlHeight;
 	UPROPERTY(EditDefaultsOnly, Category = "MantleAnim")
 	TObjectPtr<UAnimMontage> MantleLow;
+	UPROPERTY(EditDefaultsOnly, Category = "MantleAnim")
+	float SeparatorHeight = 160;
+
 	UPROPERTY()
-	TObjectPtr<ATraversalCharacter> Character;
+	TObjectPtr<ACharacter> Character;
 
 	UFUNCTION()
 	void OnAnimCompleted();

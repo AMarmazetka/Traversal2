@@ -1,10 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "GameAbilities/GA_Mantle.h"
 #include "AbilitySystemComponent.h"
-
+#include "Abilities/GameplayAbilityTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
+
+UGA_Mantle::UGA_Mantle()
+{
+	FGameplayTagContainer AssetTags;
+	AssetTags.AddTag(TAG_Mantle);
+	SetAssetTags(AssetTags);
+
+	ActivationOwnedTags.AddTag(TAG_Mantle);
+	FAbilityTriggerData TriggerData;
+	TriggerData.TriggerTag = TAG_Mantle;
+	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::GameplayEvent;
+	AbilityTriggers.Add(TriggerData);
+}
 
 void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -15,7 +28,7 @@ void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		return;
 	}
 
-	Character = Cast<ATraversalCharacter>(ActorInfo->AvatarActor.Get());
+	Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
 	if (!Character || !MantlHeight || !MantleLow)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[UGA_Mantle] Error Cast"));
@@ -24,8 +37,8 @@ void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	}
 
 	UAnimMontage* MontagePlay = MantlHeight;
-	const float Height = Character->Height;
-	const float SeparatorHeight = Character->MaxHeightVaulting;
+	const float Height = TriggerEventData->EventMagnitude;
+
 
 	if (Height >= SeparatorHeight) {
 		MontagePlay = MantlHeight;
@@ -39,8 +52,6 @@ void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	AnimTask->OnCompleted.AddDynamic(this, &UGA_Mantle::OnAnimCompleted);
 	AnimTask->OnInterrupted.AddDynamic(this, &UGA_Mantle::OnAnimInterrupted);
 	AnimTask->OnCancelled.AddDynamic(this, &UGA_Mantle::OnAnimInterrupted);
-	UE_LOG(LogTemp, Warning, TEXT("[UGA_Mantle] Test Activation"));
-
 	AnimTask->ReadyForActivation();
 
 }
