@@ -96,7 +96,7 @@ float UTraversalComponent::FindHeightTargetActor(FHitResult HitRes) {
 
 		//==LowPoint
 		// I think about two Methods: legs of Player and low point in TraversalObjects
-		const FVector EndPointToLow = StartPoint + (FVector::DownVector * 200.0f);
+		/*const FVector EndPointToLow = StartPoint + (FVector::DownVector * 200.0f);
 		FHitResult HitResLow;
 		bool bHitL = GetWorld()->LineTraceSingleByChannel(HitResLow, EndPointToLow, StartPoint, ECC_Visibility);
 		if (!bHitL) {
@@ -104,10 +104,16 @@ float UTraversalComponent::FindHeightTargetActor(FHitResult HitRes) {
 			return 0;
 		}
 		const FVector LowPoint = HitResLow.ImpactPoint;
-		const float HeightObject = FVector::Distance(HeightPoint, LowPoint);
-		UE_LOG(LogTemp, Warning, TEXT("HeightObject = %f"), HeightObject);
+		*/
+		float LowPointLLeg = GetOwner()->GetComponentByClass<USkeletalMeshComponent>()->GetSocketLocation("foot_l").Z;
+		float LowPointRLeg = GetOwner()->GetComponentByClass<USkeletalMeshComponent>()->GetSocketLocation("foot_r").Z;
+		//const FVector LowPointLeg (HeightPoint.X, HeightPoint.Y, (LowPointLLeg + LowPointRLeg) / 2);
+		const float HeightObject = HeightPoint.Z - ((LowPointLLeg + LowPointRLeg) * 0.5f);//FVector::Distance(HeightPoint, LowPointLeg);
 
+		UE_LOG(LogTemp, Warning, TEXT("HeightObject = %f"), HeightObject);
 		return HeightObject;
+
+
 	}
 	return 0;
 }
@@ -139,14 +145,6 @@ void UTraversalComponent::Vaulting() {
 		UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] Error AbilitySystemComponent "));
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning,
-		TEXT("[TraversalComponent] VaultAbility = %s"),
-		*GetNameSafe(VaultAbility));
-
-	UE_LOG(LogTemp, Warning,
-		TEXT("[TraversalComponent] MantleAbility = %s"),
-		*GetNameSafe(MantleAbility));
 	AbilitySystemComponent->TryActivateAbilityByClass(VaultAbility);
 }
 

@@ -171,6 +171,13 @@ ChangeActivate MantleAbility on Gameplay SendGameplayEventToActor
 Create one NativeTag
 Construct on Mantl Ability
 TraversalGameplayTag need for SendGameplayEventToActor
+###ImpruveSystemAfterDeadLine
+-create TraversalComponent and transfer all logics in that class
+-Create gameplay NativeTags for realization system block when PLayer spam ability
+TAG_Ability_Traversal_Mantle, "Ability.Traversal.Mantle"
+TAG_Ability_Traversal_Vault, "Ability.Traversal.Vault"
+TAG_State_Traversal_Mantle, "State.Traversal.Mantle"
+TAG_State_Traversal_Vault, "State.Traversal.Vault"
 
 -----------------------------------------------------------------------------------------------------------------------------------
 Edge
@@ -187,4 +194,7 @@ Edge
 -in Theory Finding parametrs Depth and Height can make not true result, for this really rare happens you can make additional check
 -You can use SendGameplayEventToActor for send some parameters and create FEventParam but it's need for learning. The same GameplayEffects, needs more time
 -Ability tags is old. in the future change this on AssetTags
+###ImpruveSystemAfterDeadLine
+-problem with FindHight if objects stay on itself
+
 
