@@ -54,7 +54,7 @@ ATraversalCharacter::ATraversalCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-
+	TraversalComponent = CreateDefaultSubobject<UTraversalComponent>(TEXT("TraversalComponent"));
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -137,29 +137,35 @@ void ATraversalCharacter::Look(const FInputActionValue& Value)
 }
 
 void ATraversalCharacter::Travers(const FInputActionValue& Value) {
-	Height = 0;
-	Depth = 0;
-	FindTriversalObject();
-	if (Height > 0 || Depth > 0) {
-		if (Height > MaxHeightVaulting && Height< MaxHeightMantling)
-		{
-			Mantling();
-			return;
-		}
-		if (Depth > 0 && Depth <= MaxDepthVaulting && Height < MaxHeightVaulting) {
-			Vaulting();
-			return;
-		}
-		if (Height<MaxHeightVaulting && Depth == 0) {
-			Mantling();
-			return;
-		}
-		if (Height>MaxHeightMantling) {
-			UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] VeryHeight"));
-			return;
-		}
-		return;
+	if (TraversalComponent) {
+		TraversalComponent->Traversal();
 	}
+
+	/*Height = 0;
+	Depth = 0;
+	if (TraversalComponent) {
+		FindTriversalObject();
+		if (Height > 0 || Depth > 0) {
+			if (Height > MaxHeightVaulting && Height < MaxHeightMantling)
+			{
+				TraversalComponent->Mantling();
+				return;
+			}
+			if (Depth > 0 && Depth <= MaxDepthVaulting && Height < MaxHeightVaulting) {
+				TraversalComponent->Vaulting();
+				return;
+			}
+			if (Height < MaxHeightVaulting && Depth == 0) {
+				TraversalComponent->Mantling();
+				return;
+			}
+			if (Height > MaxHeightMantling) {
+				UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] VeryHeight"));
+				return;
+			}
+			return;
+		}
+	}*/
 }
 
  void ATraversalCharacter::BeginPlay() {
@@ -167,113 +173,8 @@ void ATraversalCharacter::Travers(const FInputActionValue& Value) {
 
 	 UE_LOG(LogTemp, Warning,
 		 TEXT("=== BEGIN PLAY ==="));
-
-	 if (AbilitySystemComponent) {
-		UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] TrytoGiveAbility "));
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(MantleAbility, 1, -1));
-		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(VaultAbility, 1, -1));
-	 }
 }
 
 UAbilitySystemComponent* ATraversalCharacter::GetAbilitySystemComponent() const {
 	return AbilitySystemComponent;
-}
-
-void ATraversalCharacter::Vaulting() {
-
-	if (!AbilitySystemComponent) {
-		UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] Error AbilitySystemComponent "));
-		return;
-	}
-	AbilitySystemComponent->TryActivateAbilityByClass(VaultAbility);
-}
-
-void ATraversalCharacter::Mantling() {
-	if (!AbilitySystemComponent) {
-		UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] Error AbilitySystemComponent "));
-		return;
-	}
-	FGameplayEventData EventData;
-	EventData.EventMagnitude = Height;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, TAG_Mantle, EventData);
-	//AbilitySystemComponent->TryActivateAbilityByClass(MantleAbility);
-}
-
-void ATraversalCharacter::FindTriversalObject() {
-	//float Height = 0;
-	const FVector StartPoint = GetActorLocation();
-	const FVector ForwardVector = GetActorForwardVector();
-	const FVector EndPoint = StartPoint + ForwardVector * DistanceInputAction;
-
-	FHitResult HitRes;
-	FCollisionQueryParams IgnorCharacter;
-	IgnorCharacter.AddIgnoredActor(this);
-	bool bHit = GetWorld()->LineTraceSingleByChannel(HitRes, StartPoint, EndPoint, ECC_Visibility, IgnorCharacter);
-
-	if (!bHit || !HitRes.GetActor()) {
-		UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] NothingHit or InvalidActor"));
-		return;
-	}
-	AActor* HitActor = HitRes.GetActor();
-	if (HitActor->Implements<UTraversalObjects>()) {
-		Height = FindHeightTargetActor(HitRes);	
-		Depth = FindDepthTargetActor(HitRes);
-	}
-}
-
-float ATraversalCharacter::FindHeightTargetActor(FHitResult HitRes) {
-	AActor* HitActor = HitRes.GetActor();
-	if (HitActor->Implements<UTraversalObjects>()) {
-		//== HeightPoint
-		FVector TargetLocation = HitActor->GetActorLocation();
-		const FVector ForwardVector = GetActorForwardVector();
-		const FVector StartPoint = HitRes.ImpactPoint+ForwardVector*15.0f;
-		const FVector EndPointToHeight = StartPoint + (FVector::UpVector * 500.0f);
-		FHitResult HitResHeight;
-		bool bHitH = GetWorld()->LineTraceSingleByChannel(HitResHeight, EndPointToHeight, StartPoint,  ECC_Visibility);
-		if (!bHitH) {
-			UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] HitErrrUp"));
-			return 0;
-		}
-		const FVector HeightPoint = HitResHeight.ImpactPoint;
-
-		//==LowPoint
-		// I think about two Methods: legs of Player and low point in TraversalObjects
-		const FVector EndPointToLow = StartPoint + (FVector::DownVector * 500.0f);
-		FHitResult HitResLow;
-		bool bHitL =  GetWorld()->LineTraceSingleByChannel(HitResLow, EndPointToLow ,StartPoint, ECC_Visibility);
-		if (!bHitL) {
-			UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] HitErrrDown"));
-			return 0;
-		}
-		const FVector LowPoint = HitResLow.ImpactPoint;
-		const float HeightObject=  FVector::Distance(HeightPoint, LowPoint);
-		UE_LOG(LogTemp, Warning, TEXT("HeightObject = %f"), HeightObject);
-
-		return HeightObject;
-	}
-	return 0;
-}
-
-float ATraversalCharacter::FindDepthTargetActor(FHitResult HitRes) {
-	AActor* HitActor = HitRes.GetActor();
-	if (HitActor->Implements<UTraversalObjects>()) {
-		FVector ForwardVector = GetActorForwardVector();
-		ForwardVector.Z = 0.f;	
-		const FVector NewForwardVector= ForwardVector.GetSafeNormal();
-		const FVector EndPoint = HitRes.ImpactPoint;
-		const FVector StartPoint = EndPoint + (NewForwardVector *100.0f);
-		FHitResult HitResDepth;
-		bool bHitD = GetWorld()->LineTraceSingleByChannel(HitResDepth, StartPoint, EndPoint, ECC_Visibility);
-		if (!bHitD) {
-			UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] HitDepthError"));
-			return 0;
-		}
-		const FVector DepthPoint = HitResDepth.ImpactPoint;
-		const float DepthObject = FVector::Distance(EndPoint, DepthPoint);
-		UE_LOG(LogTemp, Warning, TEXT("DepthObject = %f"), DepthObject);
-		return DepthObject;
-	}
-	return 0;
 }

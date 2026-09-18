@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "TraversalComponent.h"
 //#include "MotionWarpingComponent.h"
 #include "TraversalCharacter.generated.h"
 
@@ -53,7 +54,7 @@ class ATraversalCharacter : public ACharacter, public IAbilitySystemInterface
 
 	//UMotionWarpingComponent* MotionWarpingComponent;
 
-	float Depth = 0;
+	
 
 
 	
@@ -73,11 +74,6 @@ protected:
 	void Travers(const FInputActionValue& Value);
 
 
-	void FindTriversalObject();
-	float FindHeightTargetActor(FHitResult HitResult);
-	float FindDepthTargetActor(FHitResult HitResult);
-			
-
 protected:
 
 	virtual void NotifyControllerChanged() override;
@@ -86,38 +82,17 @@ protected:
 	
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
+	TObjectPtr<UTraversalComponent> TraversalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-	UPROPERTY(EditDefaultsOnly, Category = "GAS")
-	TSubclassOf<UGameplayAbility> VaultAbility;
-
-	UPROPERTY(EditDefaultsOnly, Category = "GAS")
-	TSubclassOf<UGameplayAbility> MantleAbility;
-
-
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
-	float DistanceInputAction = 250;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
-	float DistanceActivateAbility  = 150;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
-	float MaxHeightVaulting = 160;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
-	float MaxDepthVaulting = 30;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
-	float MaxHeightMantling = 260;
-
-	float Height = 0;
 
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-	UFUNCTION(BlueprintCallable)
-	void Vaulting();
-	UFUNCTION(BlueprintCallable)
-	void Mantling();
 
 
 };

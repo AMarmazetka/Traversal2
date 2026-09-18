@@ -5,8 +5,29 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
+
+UGA_Vault::UGA_Vault()
+{
+	FGameplayTagContainer AssetTags;
+	AssetTags.AddTag(TAG_Ability_Traversal_Vault);
+	SetAssetTags(AssetTags);
+
+	ActivationOwnedTags.AddTag(TAG_State_Traversal_Vault);
+	FAbilityTriggerData TriggerData;
+	TriggerData.TriggerTag = TAG_Ability_Traversal_Vault;
+	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::GameplayEvent;
+	AbilityTriggers.Add(TriggerData);
+
+	BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_Mantle);
+	BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_Vault);
+	ActivationBlockedTags.AddTag(TAG_State_Traversal_Mantle);
+	ActivationBlockedTags.AddTag(TAG_State_Traversal_Vault);
+	//BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_InTraversal);
+}
+
 void UGA_Vault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) {
 		UE_LOG(LogTemp, Warning, TEXT("[UGA_Vault] Error Commit"));

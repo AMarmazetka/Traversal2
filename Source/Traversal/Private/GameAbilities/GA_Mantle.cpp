@@ -9,14 +9,19 @@
 UGA_Mantle::UGA_Mantle()
 {
 	FGameplayTagContainer AssetTags;
-	AssetTags.AddTag(TAG_Mantle);
+	AssetTags.AddTag(TAG_Ability_Traversal_Mantle);
 	SetAssetTags(AssetTags);
 
-	ActivationOwnedTags.AddTag(TAG_Mantle);
+	ActivationOwnedTags.AddTag(TAG_State_Traversal_Mantle);
 	FAbilityTriggerData TriggerData;
-	TriggerData.TriggerTag = TAG_Mantle;
+	TriggerData.TriggerTag = TAG_Ability_Traversal_Mantle;
 	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::GameplayEvent;
+	BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_Mantle);
+	BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_Vault);
+	ActivationBlockedTags.AddTag(TAG_State_Traversal_Mantle);
+	ActivationBlockedTags.AddTag(TAG_State_Traversal_Vault);
 	AbilityTriggers.Add(TriggerData);
+	//BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_InTraversal);
 }
 
 void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) {
@@ -37,8 +42,10 @@ void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	}
 
 	UAnimMontage* MontagePlay = MantlHeight;
-	const float Height = TriggerEventData->EventMagnitude;
-
+	float Height;
+	if (TriggerEventData) {
+		Height = TriggerEventData->EventMagnitude;
+	}
 
 	if (Height >= SeparatorHeight) {
 		MontagePlay = MantlHeight;
