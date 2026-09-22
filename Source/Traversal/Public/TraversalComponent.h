@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "TraversalDataAsset.h"
 #include "TraversalComponent.generated.h"
 
 
@@ -26,23 +27,25 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	TSoftObjectPtr<UTraversalDataAsset> Settings;
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	UPROPERTY()
 	TSubclassOf<UGameplayAbility> VaultAbility;
-
-	UPROPERTY(EditDefaultsOnly, Category = "GAS")
+	UPROPERTY()
 	TSubclassOf<UGameplayAbility> MantleAbility;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
+	UPROPERTY()
 	float DistanceInputAction = 250;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
+	UPROPERTY()
 	float DistanceActivateAbility = 150;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
+	UPROPERTY()
 	float MaxHeightVaulting = 160;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
+	UPROPERTY()
 	float MaxDepthVaulting = 30;
-	UPROPERTY(EditDefaultsOnly, Category = "ParametrsTraversal")
+	UPROPERTY()
 	float MaxHeightMantling = 260;
 
 	float Height = 0;
@@ -54,6 +57,7 @@ public:
 	float FindHeightTargetActor(FHitResult HitResult);
 	float FindDepthTargetActor(FHitResult HitResult);
 	void Traversal();
+	void OnSettingLoaded();
 
 
 	UFUNCTION(BlueprintCallable)

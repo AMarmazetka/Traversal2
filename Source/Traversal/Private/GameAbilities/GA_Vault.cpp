@@ -3,6 +3,8 @@
 #include "GameAbilities/GA_Vault.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/StreamableManager.h"
+#include "Engine/AssetManager.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 
@@ -22,7 +24,24 @@ UGA_Vault::UGA_Vault()
 	BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_Vault);
 	ActivationBlockedTags.AddTag(TAG_State_Traversal_Mantle);
 	ActivationBlockedTags.AddTag(TAG_State_Traversal_Vault);
-	//BlockAbilitiesWithTag.AddTag(TAG_State_Traversal_InTraversal);
+
+}
+
+void UGA_Vault::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) {
+	Super::OnAvatarSet(ActorInfo, Spec);
+	if (Settings.IsNull()) {
+		return;
+	}
+	FStreamableManager& Stream = UAssetManager::GetStreamableManager();
+	Stream.RequestAsyncLoad(Settings.ToSoftObjectPath(), FStreamableDelegate::CreateUObject(this, &UGA_Vault::OnSettingLoaded));
+}
+
+void UGA_Vault::OnSettingLoaded() {
+	if (Settings.IsValid()) { 
+		UTraversalDataAsset* Setting = Settings.Get();
+		VaultSlow = Setting->VaultSlow;
+		VaultSpeed = Setting->VaultSpeed;
+	}
 }
 
 void UGA_Vault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) {

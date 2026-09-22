@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TraversalDataAsset.h"
 #include "GameFramework/Character.h"
 #include "Abilities/GameplayAbility.h"
 #include "TraversalGameplayTags.h"
@@ -21,9 +22,12 @@ public:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "VaultAnim")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	TSoftObjectPtr<UTraversalDataAsset> Settings;
+
+	UPROPERTY()
 	TObjectPtr<UAnimMontage> VaultSlow;
-	UPROPERTY(EditDefaultsOnly, Category = "VaultAnim")
+	UPROPERTY()
 	TObjectPtr<UAnimMontage> VaultSpeed;
 	UPROPERTY()
 	TObjectPtr<ACharacter> Character;
@@ -33,5 +37,6 @@ public:
 
 	UFUNCTION()
 	void OnAnimInterrupted();
-
+	void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	void OnSettingLoaded();
 };

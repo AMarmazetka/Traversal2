@@ -9,7 +9,6 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "AbilitySystemBlueprintLibrary.h"
 #include "TraversalGameplayTags.h"
 #include "TraversalObject.h"
 #include "TraversalObjects.h"
@@ -53,6 +52,7 @@ ATraversalCharacter::ATraversalCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
 
 	TraversalComponent = CreateDefaultSubobject<UTraversalComponent>(TEXT("TraversalComponent"));
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
@@ -140,32 +140,6 @@ void ATraversalCharacter::Travers(const FInputActionValue& Value) {
 	if (TraversalComponent) {
 		TraversalComponent->Traversal();
 	}
-
-	/*Height = 0;
-	Depth = 0;
-	if (TraversalComponent) {
-		FindTriversalObject();
-		if (Height > 0 || Depth > 0) {
-			if (Height > MaxHeightVaulting && Height < MaxHeightMantling)
-			{
-				TraversalComponent->Mantling();
-				return;
-			}
-			if (Depth > 0 && Depth <= MaxDepthVaulting && Height < MaxHeightVaulting) {
-				TraversalComponent->Vaulting();
-				return;
-			}
-			if (Height < MaxHeightVaulting && Depth == 0) {
-				TraversalComponent->Mantling();
-				return;
-			}
-			if (Height > MaxHeightMantling) {
-				UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] VeryHeight"));
-				return;
-			}
-			return;
-		}
-	}*/
 }
 
  void ATraversalCharacter::BeginPlay() {
@@ -173,7 +147,10 @@ void ATraversalCharacter::Travers(const FInputActionValue& Value) {
 
 	 UE_LOG(LogTemp, Warning,
 		 TEXT("=== BEGIN PLAY ==="));
+
+
 }
+
 
 UAbilitySystemComponent* ATraversalCharacter::GetAbilitySystemComponent() const {
 	return AbilitySystemComponent;
