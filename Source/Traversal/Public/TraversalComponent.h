@@ -7,7 +7,9 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "TraversalDataAsset.h"
+#include "MotionWarpingComponent.h"
 #include "TraversalComponent.generated.h"
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -36,11 +38,12 @@ public:
 	TSubclassOf<UGameplayAbility> VaultAbility;
 	UPROPERTY()
 	TSubclassOf<UGameplayAbility> MantleAbility;
-
+	UPROPERTY()
+	TObjectPtr <UMotionWarpingComponent> MotionWarpingComponent;
 	UPROPERTY()
 	float DistanceInputAction = 250;
 	UPROPERTY()
-	float DistanceActivateAbility = 150;
+	float DistanceActivateAbility = 50;
 	UPROPERTY()
 	float MaxHeightVaulting = 160;
 	UPROPERTY()
@@ -50,6 +53,9 @@ public:
 
 	float Height = 0;
 	float Depth = 0;
+	FVector WarpLocation;
+	FRotator WarpRotation;
+
 
 
 	void GiveAbilities();
@@ -64,4 +70,8 @@ public:
 	void Vaulting();
 	UFUNCTION(BlueprintCallable)
 	void Mantling();
+	UFUNCTION(BlueprintCallable)
+	void MotionWarping(ETravelType TypeAnimation, const FVector& StartPoint, const FRotator& StartRotation); //InFutureCHange EnumType
+	UFUNCTION(BlueprintCallable)
+	void SetStartPosition(UPrimitiveComponent* Component);
 };

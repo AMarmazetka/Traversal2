@@ -8,7 +8,7 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "TraversalComponent.h"
-//#include "MotionWarpingComponent.h"
+#include "MotionWarpingComponent.h"
 #include "TraversalCharacter.generated.h"
 
 class USpringArmComponent;
@@ -52,7 +52,8 @@ class ATraversalCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* TraversalAction;
 
-	//UMotionWarpingComponent* MotionWarpingComponent;
+
+
 
 	
 
@@ -90,6 +91,8 @@ public:
 	TObjectPtr<UTraversalComponent> TraversalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr <UMotionWarpingComponent> MotionWarpingComponent;
 
 
 	/** Returns CameraBoom subobject **/

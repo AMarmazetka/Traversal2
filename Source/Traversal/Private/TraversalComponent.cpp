@@ -33,6 +33,7 @@ void UTraversalComponent::BeginPlay()
 		if (IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Owner)) {
 			AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();
 			GiveAbilities();
+			MotionWarpingComponent = Owner->FindComponentByClass<UMotionWarpingComponent>();
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("[TraversalComponent] Error Class hasn't GAS component"));
@@ -96,6 +97,8 @@ void UTraversalComponent::FindTriversalObject() {
 	if (HitActor->Implements<UTraversalObjects>()) {
 		Height = FindHeightTargetActor(HitRes);
 		Depth = FindDepthTargetActor(HitRes);
+		UPrimitiveComponent* Component = HitRes.GetComponent();
+		SetStartPosition(Component);
 	}
 }
 
@@ -174,25 +177,56 @@ void UTraversalComponent::Traversal() {
 	Height = 0;
 	Depth = 0;
 		FindTriversalObject();
+		
 		if (Height > 0 || Depth > 0) {
 			if (Height > MaxHeightVaulting && Height < MaxHeightMantling)
 			{
+				MotionWarping(ETravelType::TRAVEL_Relative, WarpLocation, WarpRotation);
 				Mantling();
 				return;
 			}
 			if (Depth > 0 && Depth <= MaxDepthVaulting && Height < MaxHeightVaulting && Height > 0) {
 				UE_LOG(LogTemp, Warning, TEXT("[TraversalComponent] Check Depth= %f Height = %f"), Depth, Height);
+				MotionWarping(ETravelType::TRAVEL_Relative, WarpLocation, WarpRotation);
 				Vaulting();
 				return;
 			}
 			if (Height < MaxHeightVaulting && Depth == 0) {
+				MotionWarping(ETravelType::TRAVEL_Relative, WarpLocation, WarpRotation);
 				Mantling();
 				return;
 			}
 			if (Height > MaxHeightMantling) {
+				MotionWarping(ETravelType::TRAVEL_Relative, WarpLocation, WarpRotation);
 				UE_LOG(LogTemp, Warning, TEXT("[TraversalComponent] VeryHeight"));
 				return;
 			}
 			return;
 		}
+}
+
+void UTraversalComponent::MotionWarping(ETravelType TypeAnimation, const FVector& StartPoint, const FRotator& StartRotation) {
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Test"), StartPoint, StartRotation);
+}
+
+void UTraversalComponent::SetStartPosition(UPrimitiveComponent* Component) {
+	FVector Zero = FVector::ZeroVector;
+	if (!Component) {
+		UE_LOG(LogTemp, Warning, TEXT("[TraversalComponent] ErrorPrimitiveComp"));
+		return;
+	
+	}
+		const FVector CharacterLocation = GetOwner()->GetActorLocation();
+		FVector ClosetPointSurf;
+		float DistToSurface =  Component->GetClosestPointOnCollision(CharacterLocation, ClosetPointSurf);
+		if (DistToSurface < 0) {
+			UE_LOG(LogTemp, Warning, TEXT("[TraversalComponent] DistToSurface <0"));
+				return;
+		}
+		FVector DirectionFromObject = (CharacterLocation - ClosetPointSurf).GetSafeNormal();
+		WarpLocation = ClosetPointSurf + DirectionFromObject * DistanceActivateAbility;
+		WarpRotation = (ClosetPointSurf - CharacterLocation).Rotation();
+		UE_LOG(LogTemp, Warning, TEXT("[TraversalComponent] WarpLoc = %s WarpRot = %s"), *WarpLocation.ToString(), *WarpRotation.ToString());
+		WarpRotation.Pitch = 0.f;
+
 }
