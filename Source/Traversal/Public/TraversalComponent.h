@@ -64,6 +64,7 @@ public:
 	float FindDepthTargetActor(FHitResult HitResult);
 	void Traversal();
 	void OnSettingLoaded();
+	void SetAbilitiesAndComponents();
 
 
 	UFUNCTION(BlueprintCallable)

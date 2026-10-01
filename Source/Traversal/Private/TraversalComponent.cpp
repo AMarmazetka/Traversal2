@@ -28,21 +28,6 @@ void UTraversalComponent::BeginPlay()
 
 	FStreamableManager& Stream = UAssetManager::GetStreamableManager();
 	Stream.RequestAsyncLoad(Settings.ToSoftObjectPath(), FStreamableDelegate::CreateUObject(this, &UTraversalComponent::OnSettingLoaded));
-
-	if (AActor* Owner = GetOwner()) {
-		if (IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Owner)) {
-			AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();
-			GiveAbilities();
-			MotionWarpingComponent = Owner->FindComponentByClass<UMotionWarpingComponent>();
-		}
-		else {
-			UE_LOG(LogTemp, Error, TEXT("[TraversalComponent] Error Class hasn't GAS component"));
-		}
-	
-	}
-
-
-
 	// ...
 	
 }
@@ -57,7 +42,20 @@ void UTraversalComponent::OnSettingLoaded() {
 		MaxHeightVaulting = Setting->MaxHeightVaulting;
 		MaxDepthVaulting = Setting->MaxDepthVaulting;
 		MaxHeightMantling = Setting->MaxHeightMantling;
+		SetAbilitiesAndComponents();
+	}	
+}
 
+void UTraversalComponent::SetAbilitiesAndComponents() {
+	if (AActor* Owner = GetOwner()) {
+		if (IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Owner)) {
+			AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();
+			GiveAbilities();
+			MotionWarpingComponent = Owner->FindComponentByClass<UMotionWarpingComponent>();
+		}
+		else {
+			UE_LOG(LogTemp, Error, TEXT("[TraversalComponent] Error Class hasn't GAS component"));
+		}
 	}
 }
 
@@ -206,6 +204,10 @@ void UTraversalComponent::Traversal() {
 }
 
 void UTraversalComponent::MotionWarping(ETravelType TypeAnimation, const FVector& StartPoint, const FRotator& StartRotation) {
+	if (!MotionWarpingComponent) {
+		UE_LOG(LogTemp, Warning, TEXT("[TraversalComponent] Don't Inizializat MotionWarpingComponent"));
+		return;
+	}
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Test"), StartPoint, StartRotation);
 }
 

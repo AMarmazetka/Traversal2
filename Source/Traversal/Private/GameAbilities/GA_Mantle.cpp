@@ -74,6 +74,7 @@ void UGA_Mantle::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	if (Height < SeparatorHeight) {
 		MontagePlay = MantleLow;
 	}
+
 	Character->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 	UAbilityTask_PlayMontageAndWait* AnimTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, MontagePlay, 1.0f, NAME_None, true, 1.0f, 0.0f);
 	

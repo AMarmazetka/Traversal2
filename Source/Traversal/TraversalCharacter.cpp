@@ -156,3 +156,7 @@ void ATraversalCharacter::Travers(const FInputActionValue& Value) {
 UAbilitySystemComponent* ATraversalCharacter::GetAbilitySystemComponent() const {
 	return AbilitySystemComponent;
 }
+
+UMotionWarpingComponent* ATraversalCharacter::GetMotionWarpingComponent() const {
+	return MotionWarpingComponent;
+}

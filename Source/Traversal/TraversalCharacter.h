@@ -80,6 +80,7 @@ protected:
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UMotionWarpingComponent* GetMotionWarpingComponent() const;
 	void OnSettingLoaded();
 	
 

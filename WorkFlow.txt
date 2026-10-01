@@ -180,6 +180,7 @@ TAG_State_Traversal_Mantle, "State.Traversal.Mantle"
 TAG_State_Traversal_Vault, "State.Traversal.Vault"
 -ChangeFindingLowPoint, on Character Boundce, I check lowest point of character and  comparing with hightest point of object more stability
 -TraversalDataAsset - AllSettings for Traversal System
+-TraversalComponet have SetStartPosition() (for find point for start animation) | MotionWarping() 
 
 -----------------------------------------------------------------------------------------------------------------------------------
 Edge
