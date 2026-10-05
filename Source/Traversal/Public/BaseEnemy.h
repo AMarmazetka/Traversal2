@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "CombatAttributeSet.h"
+#include "AtackComponent.h"
 #include "BaseEnemy.generated.h"
 
 UCLASS()
@@ -31,6 +33,10 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY()
+	TObjectPtr<UCombatAttributeSet> AttributeSet;
+	UPROPERTY()
+	TObjectPtr<UAtackComponent> AtackComponent;
 
 
 	UFUNCTION()

@@ -9,6 +9,8 @@
 #include "AbilitySystemComponent.h"
 #include "TraversalComponent.h"
 #include "MotionWarpingComponent.h"
+#include "CombatAttributeSet.h"
+#include "AtackComponent.h"
 #include "TraversalCharacter.generated.h"
 
 class USpringArmComponent;
@@ -87,13 +89,17 @@ protected:
 public:
 
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
-	TObjectPtr<UTraversalComponent> TraversalComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TraversalComponent")
+	TObjectPtr<UTraversalComponent> TraversalComponent;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr <UMotionWarpingComponent> MotionWarpingComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AtackComponent")
+	TObjectPtr<UCombatAttributeSet> AttributeSet;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AtackComponent")
+	TObjectPtr<UAtackComponent> AtackComponent;
 
 
 	/** Returns CameraBoom subobject **/
