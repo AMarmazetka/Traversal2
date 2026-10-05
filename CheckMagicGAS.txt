@@ -1,0 +1,96 @@
+JustForTestingGAS
+EXPERIMENTS
+------------------------------------------------
+What I have:
+1) ASC (Component, CentrSystem)
+2) AttributeSet (NumberCharacteristicofCharacter)
+3) GameplayAbility (Act)
+4) GameplayEffects (ChangerState)
+5) GameplayTags (NamesTagsStatesOfCharacter)
+6) GameplayCue (VisualEffects, I haven't It, but I can make empty loggic)
+7) AbilityTask (Asynch Loggic of Ability)
+8) Cost/Cooldown (Undestable, It's in GameplayEffects)
+9) Instant/Duration/PeriodicEffect (LoggicApplyEffect, Mode)
+10) Buff/Debuf (Undestable, GameplayEffect)
+11) Damage (Undestable, ExecCalc)
+12) GameplayEffectExecutionCalculator (ForCalcDamage)
+13) GameplayEvents (EventsFOrGas)
+14) TargetData ( DataAboutEnemy)
+15) CustomAbilityTasks (IfStandartNotEnoph)
+16) BlockAbility/CancelAbility (BlockAbilitiesWithTag, CancelAbilityWithTag)
+17) ChargeAbility (PressButtonOnTime)
+18) PassiveAbility (AlwaysAbility)
+19) Stun/Burn/Freeze (GameplayEffects)
+20) Stacking (StackingEffects)
+21) Immunity (ImmunitetForEnemy)
+22) Replication/Prediction (I neverworkWithNet, Just try, maybe willbe bad for wirst try)
+23) ChangeAttributesFromGE (ChanferAttributes)
+24) Death (Death)
+25) CreateAndApply GameplayEffectSpec (AbilityTakesData Create GameplayEffectSpec and fully Runtime of data Tags, TargetData, ApplySpec, ExecCalc -> it from info about GAS, very impotant thing I need check this and understand)
+26) AbilityTask_PlayMontageAnim (I haven't this for magic and atack)
++
+Resistance(ExecCalc)
+--------------------------------------------------
+Fireball:
+Mana:20
+Cooldown: 3sec
+Damage: 100
+BurningTime: 5sec
+
+IceBall:
+Mana:15
+Cooldown: 2sec
+Damage: 70
+Slow: 40% on 3 sec
+
+Sword:
+Mana:0
+Damage: 50
+
+Passive:
+ManaRegeneration
+
+Enemy:
+Health
+Mana
+Armor
+FireResistance
+IceResistance
+MoveSpeed
+Tags:( State.Stunned, State.Frozen, Status.Burning , Status.Slowed) 
+------------------------------------------------
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Invariants
+-Ability finish always with EndAbility() - (Exm: Activate->PlayMontage-> OnCompleted->EndPlay)
+-Ability never use isn't Valid Actor (IsValid())
+-GameplayEffects only for States. Nothing gameplay logic. Use it only if GAs states interacts among themself (If I will be use that class)
+-CommitAbility for atomicity (It does not need for this testwork (I haven't energy or some other parametrs for realization GA), but it's important practical)
+-Don't check only OnCopleted. Check other delegates for return Ability in ValidState
+-MovementComponent answer for Jumping, walk and other. GameplayEffect don't influence on this
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Arch:
+
+                  AbilitySystemComponent
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+     Abilities         Attributes       Gameplay Effects
+          │                 │                 │
+          │                 │                 │
+   Fireball/Ice/Sword   Health/Mana      Damage/Buff/Debuff
+          │
+    Ability Tasks
+          │
+ Animation / Targeting / Waiting
+          │
+    Gameplay Events
+          │
+   Gameplay Effects
+          │
+    Gameplay Cues
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+IMPL
+Edge
