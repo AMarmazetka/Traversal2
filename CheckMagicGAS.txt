@@ -61,18 +61,28 @@ Tags:( State.Stunned, State.Frozen, Status.Burning , Status.Slowed)
 ------------------------------------------------
 
 
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Invariants
 -Ability finish always with EndAbility() - (Exm: Activate->PlayMontage-> OnCompleted->EndPlay)
--Ability never use isn't Valid Actor (IsValid())
--GameplayEffects only for States. Nothing gameplay logic. Use it only if GAs states interacts among themself (If I will be use that class)
+-Ability never use isn't Valid Actor/Avatar (IsValid())
+-GameplayEffects for gameplay state/modification. It's don;t 
 -CommitAbility for atomicity (It does not need for this testwork (I haven't energy or some other parametrs for realization GA), but it's important practical)
 -Don't check only OnCopleted. Check other delegates for return Ability in ValidState
+-CanActivateAbility() activation must be available
+-Cost/Cooldown checks before ApplyAbility
+-Attributes Represen State/Data, never CurrentMontage and other
+-Tags describe state, category, Ability
+-Ability should manage gameplay
+-Effects DataDriven when it's possible
+
+-AbilityActivation != gameplay result
+
 -MovementComponent answer for Jumping, walk and other. GameplayEffect don't influence on this
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Arch:
-
+Don't final arch:
                   AbilitySystemComponent
                             │
           ┌─────────────────┼─────────────────┐
@@ -91,6 +101,21 @@ Arch:
    Gameplay Effects
           │
     Gameplay Cues
+
+
+Abilty - Act
+Attributes - CharacterInfo (MaybeLike HealthComponent but more)
+Effect - Change Info By Ability
+GameplayEffectExecution - Calculate Change
+Tags - StatesSystem
+Cue - Visual
+
+
+Flow:
+PressButton(Character)->  TryActivateAbility (CharacterGAS)-> GA_Atack -> Montage/ WaitEvent/ WaitTargetData ->  Trace (AtackComponent) -> HitEnemy(Actor) (AtackComponent)-> ExecutionCalcCharacter -> ChangeCharacterAttributes  
+-> CreateGESpec -> Apply GEEnemy -> EnemyGE -> ExecutionCalc -> ChangeEnemyAttributes -> GameplayCue
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 IMPL
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Edge
