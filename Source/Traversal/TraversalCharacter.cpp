@@ -56,6 +56,8 @@ ATraversalCharacter::ATraversalCharacter()
 
 	TraversalComponent = CreateDefaultSubobject<UTraversalComponent>(TEXT("TraversalComponent"));
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarping"));
+	AtackComponent = CreateDefaultSubobject<UAtackComponent>(TEXT("AtackComponent"));
+	AttributeSet = CreateDefaultSubobject<UCombatAttributeSet>(TEXT("AttributeSet"));
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -92,7 +94,10 @@ void ATraversalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATraversalCharacter::Look);
 
+		// Traversal
 		EnhancedInputComponent->BindAction(TraversalAction, ETriggerEvent::Started, this, &ATraversalCharacter::Travers);
+		// Atack
+		EnhancedInputComponent->BindAction(AtackAction, ETriggerEvent::Started, this, &ATraversalCharacter::Atack);
 
 	}
 	else
@@ -140,6 +145,16 @@ void ATraversalCharacter::Look(const FInputActionValue& Value)
 void ATraversalCharacter::Travers(const FInputActionValue& Value) {
 	if (TraversalComponent) {
 		TraversalComponent->Traversal();
+	}
+}
+
+void ATraversalCharacter::Atack(const FInputActionValue& Value) {
+	if (AtackComponent) {
+		UE_LOG(LogTemp, Error, TEXT("[TraversalCharacter] Test"));
+		AtackComponent->Atack(); // maybe AttackStratagy
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("[TraversalCharacter] AtackComponent isn't"));
 	}
 }
 

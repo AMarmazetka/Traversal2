@@ -50,7 +50,7 @@ void UTraversalComponent::SetAbilitiesAndComponents() {
 	if (AActor* Owner = GetOwner()) {
 		if (IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Owner)) {
 			AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();
-			GiveAbilities();
+			GiveTraversalAbilities();
 			MotionWarpingComponent = Owner->FindComponentByClass<UMotionWarpingComponent>();
 		}
 		else {
@@ -68,7 +68,7 @@ void UTraversalComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 }
 
 
-void UTraversalComponent::GiveAbilities() {
+void UTraversalComponent::GiveTraversalAbilities() {
 	if (AbilitySystemComponent) {
 		AbilitySystemComponent->InitAbilityActorInfo(GetOwner(), GetOwner());
 		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(MantleAbility, 1, -1));

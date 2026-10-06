@@ -58,7 +58,7 @@ public:
 
 
 
-	void GiveAbilities();
+	void GiveTraversalAbilities();
 	void FindTriversalObject();
 	float FindHeightTargetActor(FHitResult HitResult);
 	float FindDepthTargetActor(FHitResult HitResult);

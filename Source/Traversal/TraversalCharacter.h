@@ -54,6 +54,9 @@ class ATraversalCharacter : public ACharacter, public IAbilitySystemInterface
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* TraversalAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AtackAction;
+
 
 
 
@@ -75,6 +78,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Travers(const FInputActionValue& Value);
+
+	void Atack(const FInputActionValue& Value);
 
 
 protected:

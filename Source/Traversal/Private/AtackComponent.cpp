@@ -19,6 +19,14 @@ void UAtackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (AActor* Owner = GetOwner()) {
+		if (IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Owner)) {
+			AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();
+		}
+		else {
+			UE_LOG(LogTemp, Error, TEXT("[AtackComponent] Error Class hasn't GAS component"));
+		}
+	}
 	// ...
 	
 }
@@ -32,3 +40,13 @@ void UAtackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	// ...
 }
 
+void UAtackComponent::Atack() {
+	UE_LOG(LogTemp, Error, TEXT("[AtackComponent] Test"));
+	if (AbilitySystemComponent) {
+		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(FireBall, 1, -1));
+		AbilitySystemComponent->TryActivateAbilityByClass(FireBall);
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("[AtackComponent] AbilitySystemComponent isn't inizialize"));
+	}
+}
