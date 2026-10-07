@@ -80,6 +80,17 @@ Invariants
 
 -MovementComponent answer for Jumping, walk and other. GameplayEffect don't influence on this
 
+
+-Tags describe all what happens with Actor. Use macroses, example: UE_DEFINE_GAMEPLAY_TAG(TAG_Ability_Magic_FireBall,"Ability.Magic.FireBall"), UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Ability_Magic_FireBall) 
+-AttributeSets use macros. GameplayEffects reads and writes it, Macros what i need know: 
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName)
+GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName)
+GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName)
+GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName)
+GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+
+ATTRIBUTE_ACCESSORS(UCombatAttributeSet, Health);
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Arch:
 Don't final arch:
@@ -116,6 +127,39 @@ PressButton(Character)->  TryActivateAbility (CharacterGAS)-> GA_Atack -> Montag
 -> CreateGESpec -> Apply GEEnemy -> EnemyGE -> ExecutionCalc -> ChangeEnemyAttributes -> GameplayCue
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 IMPL
-
+TraversalCharacter added:
+\Value\
+-AtackComponent
+-AttributeSet
+\Function\
+-void Atack(const FInputActionValue& Value);
+-----------------
+AtackComponent:
+\Value\
+TSubclassOf<UGameplayAbility> FireBall
+TSubclassOf<UGameplayAbility> IceBall
+TSubclassOf<UGameplayAbility> SwordAtack
+\Function\
+-void Atack();
+------------------
+CombatAttributeSet:
+\Value\
+FGameplayAttributeData MaxMana, Mana, Health, MaxHealth, FireResistance
+------------------
+AtackGameplayTags:
+\Tags\
+Ability.Magic.FireBall
+Ability.Magic.IceBall 
+Ability.Combat.Sword
+State.Attacking
+Status.Burning
+Damage.Fire
+Cooldown.Fireball
+GameplayCue.Fire
+-------------------
+GA_Firebal:
+\Function\
+ActivateAbility()
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Edge
+

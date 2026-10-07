@@ -4,7 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
 #include "CombatAttributeSet.generated.h"
+
+
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName)\
+GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName)\
+GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName)\
+GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName)\
+GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 /**
  * 
@@ -14,4 +22,27 @@ class TRAVERSAL_API UCombatAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(BlueprintReadOnly, Category="Attributes")
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, Health);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, MaxHealth);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData Mana;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, Mana);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, MaxMana);
+
+
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData FireResistance;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, FireResistance);
+
 };

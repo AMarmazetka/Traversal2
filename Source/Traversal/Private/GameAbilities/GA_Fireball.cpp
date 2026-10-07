@@ -13,4 +13,7 @@ void UGA_Fireball::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("[UGA_Fireball] Action"));
+	EndAbility(Handle, ActorInfo,ActivationInfo,false,false);
+	return;
 }
+
