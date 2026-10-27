@@ -70,7 +70,7 @@ void UTraversalComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UTraversalComponent::GiveTraversalAbilities() {
 	if (AbilitySystemComponent) {
-		AbilitySystemComponent->InitAbilityActorInfo(GetOwner(), GetOwner());
+		//AbilitySystemComponent->InitAbilityActorInfo(GetOwner(), GetOwner());
 		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(MantleAbility, 1, -1));
 		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(VaultAbility, 1, -1));
 	}

@@ -8,6 +8,7 @@
 #include "AbilitySystemComponent.h"
 #include "AtackComponent.generated.h"
 
+class UGameplayAbility;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TRAVERSAL_API UAtackComponent : public UActorComponent
@@ -28,6 +29,8 @@ public:
 	TSubclassOf<UGameplayAbility> SwordAtack;
 
 	void Atack();
+	void GrantAbilities();
+	void InitializeAbilitySystem(UAbilitySystemComponent* InASC);
 
 protected:
 	// Called when the game starts
@@ -39,5 +42,6 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+private:
+	bool bAbilitiesGranted = false;
 };

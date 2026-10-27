@@ -40,9 +40,12 @@ public:
 	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, MaxMana);
 
 
-
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
 	FGameplayAttributeData FireResistance;
 	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, FireResistance);
+
+
+
+	UCombatAttributeSet();
 
 };

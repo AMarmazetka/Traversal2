@@ -53,7 +53,7 @@ ATraversalCharacter::ATraversalCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	TraversalComponent = CreateDefaultSubobject<UTraversalComponent>(TEXT("TraversalComponent"));
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarping"));
 	AtackComponent = CreateDefaultSubobject<UAtackComponent>(TEXT("AtackComponent"));
@@ -150,7 +150,6 @@ void ATraversalCharacter::Travers(const FInputActionValue& Value) {
 
 void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 	if (AtackComponent) {
-		UE_LOG(LogTemp, Error, TEXT("[TraversalCharacter] Test"));
 		AtackComponent->Atack(); // maybe AttackStratagy
 	}
 	else {
@@ -163,7 +162,18 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 
 	 UE_LOG(LogTemp, Warning,
 		 TEXT("=== BEGIN PLAY ==="));
+	 if (!AbilitySystemComponent)
+	 {
+		 UE_LOG(LogTemp, Error, TEXT("[TraversalCharacter] ASC is null"));
+		 return;
+	 }
 
+	 AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	 if (AtackComponent)
+	 {
+		 AtackComponent->InitializeAbilitySystem(AbilitySystemComponent);
+	 }
 
 }
 

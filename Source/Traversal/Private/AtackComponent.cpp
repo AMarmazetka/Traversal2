@@ -8,7 +8,7 @@ UAtackComponent::UAtackComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -41,7 +41,6 @@ void UAtackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 }
 
 void UAtackComponent::Atack() {
-	UE_LOG(LogTemp, Error, TEXT("[AtackComponent] Test"));
 	if (AbilitySystemComponent) {
 		AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(FireBall, 1, -1));
 		AbilitySystemComponent->TryActivateAbilityByClass(FireBall);
@@ -49,4 +48,38 @@ void UAtackComponent::Atack() {
 	else {
 		UE_LOG(LogTemp, Error, TEXT("[AtackComponent] AbilitySystemComponent isn't inizialize"));
 	}
+}
+
+void UAtackComponent::InitializeAbilitySystem(UAbilitySystemComponent* InASC)
+{
+	if (!InASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AtackComponent: ASC is null"));
+		return;
+	}
+
+	AbilitySystemComponent = InASC;
+	GrantAbilities();
+}
+
+
+void UAtackComponent::GrantAbilities()
+{
+	if (!AbilitySystemComponent || bAbilitiesGranted)
+	{
+		return;
+	}
+	if (!GetOwner() || !GetOwner()->HasAuthority())
+	{
+		return;
+	}
+	if (!FireBall)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FireballAbility is not assigned"));
+		return;
+	}
+	
+	FGameplayAbilitySpec FireballSpec(FireBall,1);
+	AbilitySystemComponent->GiveAbility(FireballSpec);
+	bAbilitiesGranted = true;
 }
