@@ -9,6 +9,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UGameplayEffect;
 
 UCLASS()
 class TRAVERSAL_API AFireballProjectile : public AActor
@@ -27,6 +28,8 @@ protected:
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fireball")
 	TObjectPtr <USphereComponent> CollisionComponent;
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UFUNCTION()
 	void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);

@@ -4,6 +4,9 @@
 #include "Projectile/FireballProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "AbilitySystemInterface.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayEffect.h"
 
 // Sets default values
 AFireballProjectile::AFireballProjectile()
@@ -44,6 +47,24 @@ void AFireballProjectile::BeginPlay()
 void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 	if (OtherActor && OtherActor != GetOwner()) {
 		UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Hit: %s"), *GetNameSafe(OtherActor));
+	}
+	IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(OtherActor);
+	if (ASI) {
+		UAbilitySystemComponent* TargetASC = ASI->GetAbilitySystemComponent();
+		if (TargetASC && DamageEffect) {
+			FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandleEff = TargetASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
+			if (SpecHandleEff.IsValid()) {
+				TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
+				UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Damage on %s"), *GetNameSafe(OtherActor));
+			}
+		}
+		else {
+			UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] TatrgetASC or DamageEffect not found"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] Tatrgetdoes not implement AbilityInterface"));
 	}
 	Destroy();
 }

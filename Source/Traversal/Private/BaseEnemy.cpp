@@ -8,16 +8,23 @@ ABaseEnemy::ABaseEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AtackComponent = CreateDefaultSubobject<UAtackComponent>(TEXT("AtackComponent"));
 	AttributeSet = CreateDefaultSubobject<UCombatAttributeSet>(TEXT("AttributeSet"));
 
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 }
 
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (!AbilitySystemComponent) {
+		UE_LOG(LogTemp, Error, TEXT("[BaseEnemy] AbilitySystemComponent is null"));
+		return;
+	}
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 // Called every frame
