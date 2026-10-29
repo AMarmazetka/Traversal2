@@ -46,30 +46,40 @@ void AFireballProjectile::BeginPlay()
 }
 
 void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
-	if (OtherActor && OtherActor != GetOwner()) {
+	if (!OtherActor || OtherActor == GetOwner()) {
 		UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Hit: %s"), *GetNameSafe(OtherActor));
+		Destroy();
+		return;
 	}
-	IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(OtherActor);
-	if (ASI) {
-		UAbilitySystemComponent* TargetASC = ASI->GetAbilitySystemComponent();
-		if (TargetASC && DamageEffect) {
-			FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
-			FGameplayEffectSpecHandle SpecHandleEff = TargetASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
+	UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Hit: %s"), *GetNameSafe(OtherActor));
+	IAbilitySystemInterface* SourceASI = Cast<IAbilitySystemInterface>(GetOwner());
+	IAbilitySystemInterface* TargetASI = Cast<IAbilitySystemInterface>(OtherActor);
+
+	if (TargetASI && SourceASI) {
+		UAbilitySystemComponent* TargetASC = TargetASI->GetAbilitySystemComponent();
+		UAbilitySystemComponent* SourceASC = SourceASI->GetAbilitySystemComponent();
+		if (TargetASC && DamageEffect && SourceASC) {
+			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+			FGameplayEffectSpecHandle SpecHandleEff = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
 
 			if (SpecHandleEff.IsValid()) {
 				SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, 25.0f);
 				SpecHandleEff.Data->AddDynamicAssetTag(TAG_Damage_Fire);
 
-				TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
+				const FActiveGameplayEffectHandle AppliedEffect = TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
 				UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Damage on %s"), *GetNameSafe(OtherActor));
+			}
+			else {
+				UE_LOG(LogTemp,Error,TEXT("[FireballProjectile] Failed to create GameplayEffectSpec"));
 			}
 		}
 		else {
-			UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] TatrgetASC or DamageEffect not found"));
+			UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] TatrgetASC or DamageEffect or SorceASC not found"));
 		}
 	}
 	else {
-		UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] Tatrgetdoes not implement AbilityInterface"));
+		UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] Tatrget or Source does not implement AbilityInterface"));
 	}
 	Destroy();
 }

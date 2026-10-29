@@ -2,6 +2,7 @@
 
 #include "CombatAttributeSet.h"
 #include "AtackGameplayTags.h"
+#include "BaseEnemy.h"
 #include "GameplayEffectExtension.h"
 
 
@@ -33,7 +34,15 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 		}
 		const float NewHealth = FMath::Clamp(GetHealth() - FinalDamage, 0.0f, GetMaxHealth());
 		SetHealth(NewHealth);
+
 		UE_LOG(LogTemp, Warning,TEXT("[CombatAttributeSet] Damage: %.1f | Health: %.1f / %.1f | ResistanceFire: %.1f"), FinalDamage, GetHealth(), GetMaxHealth() , GetFireResistance());
+		if (GetHealth() <= 0.0f) {
+			UE_LOG(LogTemp, Warning, TEXT("[CombatAttributeSet] Health = 0 "));
+			if (ABaseEnemy* Enemy = Cast<ABaseEnemy>(GetOwningActor())) {
+				UE_LOG(LogTemp, Warning, TEXT("[CombatAttributeSet] if cast "));
+				Enemy->Die();
+			}
+		}
 	}
 	else {
 		return;

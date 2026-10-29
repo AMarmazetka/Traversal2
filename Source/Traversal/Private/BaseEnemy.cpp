@@ -1,7 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "BaseEnemy.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "AIController.h"
+#include "BrainComponent.h"
+
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -43,4 +47,24 @@ void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 UAbilitySystemComponent* ABaseEnemy::GetAbilitySystemComponent() const {
 	return AbilitySystemComponent;
+}
+
+void ABaseEnemy::Die() {
+	if (bIsDead) {
+		return;
+	}
+
+	bIsDead = true;
+	UE_LOG(LogTemp, Warning, TEXT("%s is dead"), *GetName());
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	if (AAIController* AIController = Cast<AAIController>(GetController())) {
+		AIController->StopMovement();
+		if (UBrainComponent* Brain = AIController->GetBrainComponent())
+		{
+			Brain->StopLogic(TEXT("Dead"));
+		}
+	}
+
 }

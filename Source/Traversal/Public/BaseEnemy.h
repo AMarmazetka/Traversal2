@@ -26,11 +26,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UFUNCTION()
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UFUNCTION()
+	void Die();
 
 
+public:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
@@ -38,7 +42,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<UAtackComponent> AtackComponent;
 
+protected:
+	bool bIsDead = false;
 
-	UFUNCTION()
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };

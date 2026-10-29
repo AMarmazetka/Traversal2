@@ -12,6 +12,7 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_State_Attacking, "State.Attacking");
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_Status_Burning, "Status.Burning");
 
+UE_DEFINE_GAMEPLAY_TAG(TAG_Damage_Physical, "Damage.Physical");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Damage_Fire, "Damage.Fire");
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_Cooldown_Fireball, "Cooldown.Fireball");
