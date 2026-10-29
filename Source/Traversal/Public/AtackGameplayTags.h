@@ -24,6 +24,8 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Cooldown_Fireball);
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_GameplayCue_Damage_Fire);
 
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_Data_Damage);
+
 
 class TRAVERSAL_API AtackGameplayTags
 {

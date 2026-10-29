@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "AtackGameplayTags.h"
 #include "GameplayEffect.h"
 
 // Sets default values
@@ -54,7 +55,11 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 		if (TargetASC && DamageEffect) {
 			FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
 			FGameplayEffectSpecHandle SpecHandleEff = TargetASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
+
 			if (SpecHandleEff.IsValid()) {
+				SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, 25.0f);
+				SpecHandleEff.Data->AddDynamicAssetTag(TAG_Damage_Fire);
+
 				TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
 				UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Damage on %s"), *GetNameSafe(OtherActor));
 			}
