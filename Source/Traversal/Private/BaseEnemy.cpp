@@ -66,5 +66,8 @@ void ABaseEnemy::Die() {
 			Brain->StopLogic(TEXT("Dead"));
 		}
 	}
+}
 
+bool ABaseEnemy::IsDead() {
+	return bIsDead;
 }

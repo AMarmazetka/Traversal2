@@ -9,6 +9,7 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameplayEffect.h"
 #include "TraversalGameplayTags.h"
 #include "TraversalObject.h"
 #include "TraversalObjects.h"
@@ -172,6 +173,19 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 	 }
 
 	 AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	 if (ManaRegenerationEffect) {
+		 FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		 EffectContext.AddSourceObject(this);
+		 FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent ->MakeOutgoingSpec(ManaRegenerationEffect, 1.0f, EffectContext);
+		 if (SpecHandle.IsValid()) {
+			 AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			 UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] Mana regeneration applied"));
+		 }
+	 }
+	 else {
+		 UE_LOG(LogTemp, Warning, TEXT("[TraversalCharacter] Mana regeneration is.t assigned"));
+	 }
 
 	 if (AtackComponent)
 	 {

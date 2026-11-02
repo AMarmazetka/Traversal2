@@ -105,6 +105,8 @@ public:
 	TObjectPtr<UCombatAttributeSet> AttributeSet;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AtackComponent")
 	TObjectPtr<UAtackComponent> AtackComponent;
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Attributes")
+	TSubclassOf<UGameplayEffect> ManaRegenerationEffect;
 
 
 	/** Returns CameraBoom subobject **/

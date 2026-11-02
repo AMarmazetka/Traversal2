@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemInterface.h"
+#include "BaseEnemy.h"
 #include "AbilitySystemComponent.h"
 #include "AtackGameplayTags.h"
 #include "GameplayEffect.h"
@@ -56,6 +57,13 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 	IAbilitySystemInterface* TargetASI = Cast<IAbilitySystemInterface>(OtherActor);
 
 	if (TargetASI && SourceASI) {
+
+		ABaseEnemy* TargetEnemy = Cast<ABaseEnemy>(OtherActor);
+			if (!TargetEnemy || TargetEnemy->IsDead()) {
+				Destroy();
+				return;
+			}
+
 		UAbilitySystemComponent* TargetASC = TargetASI->GetAbilitySystemComponent();
 		UAbilitySystemComponent* SourceASC = SourceASI->GetAbilitySystemComponent();
 		if (TargetASC && DamageEffect && SourceASC) {

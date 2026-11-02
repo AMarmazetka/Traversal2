@@ -32,6 +32,8 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION()
 	void Die();
+	UFUNCTION()
+	bool IsDead();
 
 
 public:
