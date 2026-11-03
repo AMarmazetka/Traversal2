@@ -18,6 +18,10 @@ UCombatAttributeSet::UCombatAttributeSet() {
 
 void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) {
 	Super::PostGameplayEffectExecute(Data);
+	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Mana] Current: %.1f / %.1f"), GetMana(), GetMaxMana());
+	}
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute()) {
 		const float Damage = GetIncomingDamage();
 		SetIncomingDamage(0.0f);
@@ -36,6 +40,7 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 		SetHealth(NewHealth);
 
 		UE_LOG(LogTemp, Warning,TEXT("[CombatAttributeSet] Damage: %.1f | Health: %.1f / %.1f | ResistanceFire: %.1f"), FinalDamage, GetHealth(), GetMaxHealth() , GetFireResistance());
+
 		if (GetHealth() <= 0.0f) {
 			UE_LOG(LogTemp, Warning, TEXT("[CombatAttributeSet] Health = 0 "));
 			if (ABaseEnemy* Enemy = Cast<ABaseEnemy>(GetOwningActor())) {

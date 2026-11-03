@@ -11,7 +11,7 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class UGameplayEffect;
 
-UCLASS()
+UCLASS(BlueprintType)
 class TRAVERSAL_API AFireballProjectile : public AActor
 {
 	GENERATED_BODY()
@@ -34,5 +34,8 @@ protected:
 	UFUNCTION()
 	void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
+protected:
+	float Damage = 0.0f;
 
+	void InitializeProjectile(float InDamage, float InSpeed, float InLIfetime);
 };

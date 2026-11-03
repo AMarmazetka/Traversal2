@@ -92,4 +92,8 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 	Destroy();
 }
 
+void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime) {
+
+}
+
 

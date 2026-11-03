@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameAbilities/DA/ProjectileAbilityDataAsset.h"
 #include "GA_Fireball.generated.h"
 
 /**
@@ -25,4 +26,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Fireball")
 	TSubclassOf<AFireballProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	TObjectPtr<UProjectileAbilityDataAsset> ProjectileData;
 };
