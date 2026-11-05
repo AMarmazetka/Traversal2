@@ -47,6 +47,11 @@ void UGA_Fireball::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	SpawnParameters.Instigator = Cast<APawn>(AvatarActor);
 	AFireballProjectile* Projectile = AvatarActor->GetWorld()->SpawnActor<AFireballProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, SpawnParameters);
 
+	if (Projectile)
+	{
+		Projectile->InitializeProjectile(ProjectileData->Damage, ProjectileData->ProjectileSpeed, ProjectileData->ProjectileLifetime, ProjectileData->DamageEffect);
+	}
+
 	if (!Projectile) {
 		UE_LOG(LogTemp, Error, TEXT("[GA_Fireball] Failed to spawn projectile"));
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);

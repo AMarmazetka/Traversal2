@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "GameplayEffect.h"
 #include "ProjectileAbilityDataAsset.generated.h"
 
 /**
@@ -15,6 +16,10 @@ class TRAVERSAL_API UProjectileAbilityDataAsset : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+    TSubclassOf<UGameplayEffect> DamageEffect;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
     float Damage = 25.0f;
 

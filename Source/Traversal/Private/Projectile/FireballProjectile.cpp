@@ -30,12 +30,8 @@ AFireballProjectile::AFireballProjectile()
 
 
 	ProjectileMovementComponent->UpdatedComponent = CollisionComponent;
-	ProjectileMovementComponent->InitialSpeed = 1500.0f;
-	ProjectileMovementComponent->MaxSpeed = 1500.0f;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	ProjectileMovementComponent->bShouldBounce = false;
-	InitialLifeSpan = 5.0f;
-
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AFireballProjectile::OnProjectileHit);
 }
 
@@ -67,12 +63,13 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 		UAbilitySystemComponent* TargetASC = TargetASI->GetAbilitySystemComponent();
 		UAbilitySystemComponent* SourceASC = SourceASI->GetAbilitySystemComponent();
 		if (TargetASC && DamageEffect && SourceASC) {
+
 			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 			EffectContext.AddSourceObject(this);
 			FGameplayEffectSpecHandle SpecHandleEff = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
 
 			if (SpecHandleEff.IsValid()) {
-				SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, 25.0f);
+				SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, Damage);
 				SpecHandleEff.Data->AddDynamicAssetTag(TAG_Damage_Fire);
 
 				const FActiveGameplayEffectHandle AppliedEffect = TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
@@ -92,8 +89,13 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 	Destroy();
 }
 
-void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime) {
-
+void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime, TSubclassOf<UGameplayEffect> InDamageEffect) {
+	Damage = InDamage;
+	DamageEffect = InDamageEffect;
+	ProjectileMovementComponent->InitialSpeed = InSpeed;
+	ProjectileMovementComponent->MaxSpeed = InSpeed;
+	ProjectileMovementComponent->Velocity = GetActorForwardVector() * InSpeed;
+	SetLifeSpan(InLIfetime);
 }
 
 

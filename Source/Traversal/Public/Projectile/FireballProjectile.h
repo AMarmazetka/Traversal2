@@ -19,6 +19,8 @@ class TRAVERSAL_API AFireballProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AFireballProjectile();
+	//void InitializeProjectile(float InDamage, float InSpeed, float InLIfetime);
+	void InitializeProjectile(float InDamage, float InSpeed, float InLifetime, TSubclassOf<UGameplayEffect> InDamageEffect);
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,14 +30,15 @@ protected:
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fireball")
 	TObjectPtr <USphereComponent> CollisionComponent;
-	UPROPERTY(EditDefaultsOnly, Category = "Effect")
-	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UFUNCTION()
 	void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
+
 protected:
 	float Damage = 0.0f;
 
-	void InitializeProjectile(float InDamage, float InSpeed, float InLIfetime);
+private:
+	TSubclassOf<UGameplayEffect> DamageEffect;
+	
 };
