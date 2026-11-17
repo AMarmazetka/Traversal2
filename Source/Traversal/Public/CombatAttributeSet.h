@@ -48,6 +48,9 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, IncomingDamage);
 
+	UPROPERTY(BlueprintReadOnly, Category =  "Combat")
+	FGameplayAttributeData DamageBonus;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, DamageBonus);
 
 	UCombatAttributeSet();
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;

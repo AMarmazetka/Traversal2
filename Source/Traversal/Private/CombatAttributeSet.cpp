@@ -14,37 +14,30 @@ UCombatAttributeSet::UCombatAttributeSet() {
 	InitMaxMana(100.f);
 
 	InitFireResistance(50.f);
+	InitDamageBonus(0.0f);
 }
 
 void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) {
 	Super::PostGameplayEffectExecute(Data);
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[Mana] Current: %.1f / %.1f"), GetMana(), GetMaxMana());
+		UE_LOG(LogTemp, Warning, TEXT("[UCombatAttributeSet] CurrentMana: %.1f / %.1f"), GetMana(), GetMaxMana());
 	}
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute()) {
 		const float Damage = GetIncomingDamage();
 		SetIncomingDamage(0.0f);
 		if (Damage <= 0.0f) {
-			UE_LOG(LogTemp, Warning, TEXT("[CombatAttributeSet] Damage: %.1f | Health: %.1f / %.1f"), Damage, GetHealth(), GetMaxHealth());
 			return;
 		}
 		float FinalDamage = Damage;
-		FGameplayTagContainer EffectTags;
-		Data.EffectSpec.GetAllAssetTags(EffectTags);
-		if (EffectTags.HasTag(TAG_Damage_Fire)) {
-			const float FireResistance2 = FMath::Clamp(GetFireResistance(), 0.0f, 100.0f);
-			FinalDamage = FinalDamage * (1.0f - FireResistance2 / 100.0f);
-		}
+
 		const float NewHealth = FMath::Clamp(GetHealth() - FinalDamage, 0.0f, GetMaxHealth());
 		SetHealth(NewHealth);
 
 		UE_LOG(LogTemp, Warning,TEXT("[CombatAttributeSet] Damage: %.1f | Health: %.1f / %.1f | ResistanceFire: %.1f"), FinalDamage, GetHealth(), GetMaxHealth() , GetFireResistance());
 
 		if (GetHealth() <= 0.0f) {
-			UE_LOG(LogTemp, Warning, TEXT("[CombatAttributeSet] Health = 0 "));
 			if (ABaseEnemy* Enemy = Cast<ABaseEnemy>(GetOwningActor())) {
-				UE_LOG(LogTemp, Warning, TEXT("[CombatAttributeSet] if cast "));
 				Enemy->Die();
 			}
 		}

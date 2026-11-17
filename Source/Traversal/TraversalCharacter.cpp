@@ -174,6 +174,17 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 
 	 AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
+	 if (DamageBonusEffect) {
+		 FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
+		 Context.AddSourceObject(this);
+		 FGameplayEffectSpecHandle Spec = AbilitySystemComponent->MakeOutgoingSpec(DamageBonusEffect, 1.0f, Context);
+
+		 if (Spec.IsValid()) {
+			 AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+		 }
+	 }
+
+
 	 if (ManaRegenerationEffect) {
 		 FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 		 EffectContext.AddSourceObject(this);

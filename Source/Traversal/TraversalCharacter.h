@@ -107,6 +107,8 @@ public:
 	TObjectPtr<UAtackComponent> AtackComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Attributes")
 	TSubclassOf<UGameplayEffect> ManaRegenerationEffect;
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Attributes")
+	TSubclassOf<UGameplayEffect> DamageBonusEffect;
 
 
 	/** Returns CameraBoom subobject **/
