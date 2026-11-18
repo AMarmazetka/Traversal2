@@ -20,6 +20,7 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_Cooldown_Fireball, "Cooldown.Fireball");
 UE_DEFINE_GAMEPLAY_TAG(TAG_GameplayCue_Damage_Fire, "GameplayCue.Fire");
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_Data_Damage, "Data.Damage")
+UE_DEFINE_GAMEPLAY_TAG(TAG_Data_BurnBuildup, "Data.BurnBuildup");
 
 AtackGameplayTags::AtackGameplayTags()
 {

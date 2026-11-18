@@ -20,7 +20,7 @@ public:
 	// Sets default values for this actor's properties
 	AFireballProjectile();
 	//void InitializeProjectile(float InDamage, float InSpeed, float InLIfetime);
-	void InitializeProjectile(float InDamage, float InSpeed, float InLifetime, TSubclassOf<UGameplayEffect> InDamageEffect);
+	void InitializeProjectile(float InDamage, float InSpeed, float InLifetime, TSubclassOf<UGameplayEffect> InDamageEffect, TSubclassOf<UGameplayEffect> BurnbuildupEffect);
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,5 +40,6 @@ protected:
 
 private:
 	TSubclassOf<UGameplayEffect> DamageEffect;
+	TSubclassOf<UGameplayEffect> BurnbuildupEffect;
 	
 };

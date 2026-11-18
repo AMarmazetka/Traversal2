@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "FireDamageExecution.generated.h"
+#include "DamageExecution.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TRAVERSAL_API UFireDamageExecution : public UGameplayEffectExecutionCalculation
+class TRAVERSAL_API UDamageExecution : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 	
 public:
-	UFireDamageExecution();
+	UDamageExecution();
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParam, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 };

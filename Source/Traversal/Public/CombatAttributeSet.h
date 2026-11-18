@@ -44,13 +44,22 @@ public:
 	FGameplayAttributeData FireResistance;
 	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, FireResistance);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData BurnBuildup;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, BurnBuildup)
+
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, IncomingDamage);
 
-	UPROPERTY(BlueprintReadOnly, Category =  "Combat")
-	FGameplayAttributeData DamageBonus;
-	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, DamageBonus);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	FGameplayAttributeData FireDamageBonus;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, FireDamageBonus)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	FGameplayAttributeData PhysicalDamageBonus;
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, PhysicalDamageBonus)
 
 	UCombatAttributeSet();
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;

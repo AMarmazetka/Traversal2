@@ -181,6 +181,11 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 
 		 if (Spec.IsValid()) {
 			 AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+			 UE_LOG(LogTemp, Warning, TEXT("[Character] FireDamageBonus after GE: %f"),
+				 AbilitySystemComponent->GetNumericAttribute(
+					 UCombatAttributeSet::GetFireDamageBonusAttribute()
+				 )
+			 );
 		 }
 	 }
 

@@ -10,6 +10,9 @@
 /**
  * 
  */
+
+class UGameplayEffect;
+
 UCLASS(BlueprintType)
 class TRAVERSAL_API UProjectileAbilityDataAsset : public UDataAsset
 {
@@ -28,4 +31,7 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
     float ProjectileLifetime = 5.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fire")
+    TSubclassOf<UGameplayEffect> BurnBuildupEffect;
 };

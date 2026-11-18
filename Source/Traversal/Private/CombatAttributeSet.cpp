@@ -14,7 +14,35 @@ UCombatAttributeSet::UCombatAttributeSet() {
 	InitMaxMana(100.f);
 
 	InitFireResistance(50.f);
-	InitDamageBonus(0.0f);
+	InitBurnBuildup(0.0f);
+
+	InitFireDamageBonus(0.0f);
+	InitPhysicalDamageBonus(0.0f);
+}
+
+void UCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if (Attribute == GetHealthAttribute()) {
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
+	}
+
+	if (Attribute == GetManaAttribute()) {
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxMana());
+	}
+
+	if (Attribute == GetFireResistanceAttribute()) {
+		NewValue = FMath::Clamp(NewValue, 0.0f, 100.0f);
+	}
+
+	if (Attribute == GetFireDamageBonusAttribute()) {
+		NewValue = FMath::Max(NewValue, 0.0f);
+	}
+
+	if (Attribute == GetPhysicalDamageBonusAttribute()) {
+		NewValue = FMath::Max(NewValue, 0.0f);
+	}
+
 }
 
 void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) {
@@ -23,6 +51,13 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[UCombatAttributeSet] CurrentMana: %.1f / %.1f"), GetMana(), GetMaxMana());
 	}
+
+	//
+	if (Data.EvaluatedData.Attribute == GetBurnBuildupAttribute())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("[CombatAttributeSet] BurnBuildup: %.1f / 100"),GetBurnBuildup());
+	}
+
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute()) {
 		const float Damage = GetIncomingDamage();
 		SetIncomingDamage(0.0f);
@@ -47,9 +82,3 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	}
 }
 
-void UCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {
-	Super::PreAttributeChange(Attribute, NewValue);
-	if (Attribute == GetManaAttribute()) {
-		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxMana());
-	}
-}

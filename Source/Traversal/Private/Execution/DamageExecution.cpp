@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Execution/FireDamageExecution.h"
+#include "Execution/DamageExecution.h"
 #include "CombatAttributeSet.h"
 #include "GameplayEffect.h"
 #include "AtackGameplayTags.h"
@@ -8,28 +8,28 @@
 
 
 
-namespace FireDamageStatics {
-	struct FFireDamageStatics {
-		FGameplayEffectAttributeCaptureDefinition DamageBonusDef;
+namespace DamageStatics {
+	struct FDamageStatics {
+		FGameplayEffectAttributeCaptureDefinition FireDamageBonusDef;
 		FGameplayEffectAttributeCaptureDefinition FireResistanceDef;
-		FFireDamageStatics() {
-			DamageBonusDef = FGameplayEffectAttributeCaptureDefinition(UCombatAttributeSet::GetDamageBonusAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		FDamageStatics() {
+			FireDamageBonusDef = FGameplayEffectAttributeCaptureDefinition(UCombatAttributeSet::GetFireDamageBonusAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 			FireResistanceDef = FGameplayEffectAttributeCaptureDefinition(UCombatAttributeSet::GetFireResistanceAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
 		}
 	};
 
-	static const FFireDamageStatics& Get() {
-		static FFireDamageStatics Statics;
+	static const FDamageStatics& Get() {
+		static FDamageStatics Statics;
 		return Statics;
 	}
 }
 
-UFireDamageExecution::UFireDamageExecution() {
-	RelevantAttributesToCapture.Add(FireDamageStatics::Get().DamageBonusDef);
-	RelevantAttributesToCapture.Add(FireDamageStatics::Get().FireResistanceDef);
+UDamageExecution::UDamageExecution() {
+	RelevantAttributesToCapture.Add(DamageStatics::Get().FireDamageBonusDef);
+	RelevantAttributesToCapture.Add(DamageStatics::Get().FireResistanceDef);
 }
 
-void UFireDamageExecution::Execute_Implementation(
+void UDamageExecution::Execute_Implementation(
     const FGameplayEffectCustomExecutionParameters& ExecutionParams,
     FGameplayEffectCustomExecutionOutput& OutExecutionOutput
 ) const
@@ -38,18 +38,20 @@ void UFireDamageExecution::Execute_Implementation(
 	const float BaseDamage = Spec.GetSetByCallerMagnitude(TAG_Data_Damage, false, 0.0f);
     FAggregatorEvaluateParameters EvaluationParameters;
 
-    float DamageBonus = 0.3f;
+    float FireDamageBonus = 0.3f;
     float FireResistance = 50.0f;
 
-	const float BonusMultiplier = 1.0f + DamageBonus;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().FireDamageBonusDef, EvaluationParameters, FireDamageBonus);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().FireResistanceDef, EvaluationParameters, FireResistance);
+
+	const float BonusMultiplier = 1.0f + FireDamageBonus;
 	const float ResistanceMultiplier = 1.0f - FMath::Clamp(FireResistance, 0.0f, 100.0f) / 100;
 	const float FinalDamage = BaseDamage * BonusMultiplier * ResistanceMultiplier;
 
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude( FireDamageStatics::Get().DamageBonusDef, EvaluationParameters, DamageBonus );
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude( FireDamageStatics::Get().FireResistanceDef, EvaluationParameters, FireResistance );
+
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCombatAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, FinalDamage));
 
 
-    UE_LOG( LogTemp, Warning, TEXT("[FireDamageExecution] DamageBonus: %f | FireResistance: %f"), DamageBonus, FireResistance );
+    UE_LOG( LogTemp, Warning, TEXT("[FireDamageExecution] DamageBonus: %f | FireResistance: %f"), FireDamageBonus, FireResistance );
 }

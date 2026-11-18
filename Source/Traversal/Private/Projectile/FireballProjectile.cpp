@@ -62,25 +62,46 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 
 		UAbilitySystemComponent* TargetASC = TargetASI->GetAbilitySystemComponent();
 		UAbilitySystemComponent* SourceASC = SourceASI->GetAbilitySystemComponent();
-		if (TargetASC && DamageEffect && SourceASC) {
+		if (TargetASC && SourceASC) {
+			// ********************************************************************Damage
+			if (DamageEffect) {
 
-			FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
-			EffectContext.AddSourceObject(this);
-			FGameplayEffectSpecHandle SpecHandleEff = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
+				FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
+				EffectContext.AddSourceObject(this);
+				FGameplayEffectSpecHandle SpecHandleEff = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
 
-			if (SpecHandleEff.IsValid()) {
-				SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, Damage);
-				SpecHandleEff.Data->AddDynamicAssetTag(TAG_Damage_Fire);
+				if (SpecHandleEff.IsValid()) {
+					SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, Damage);
+					SpecHandleEff.Data->AddDynamicAssetTag(TAG_Damage_Fire);
 
-				const FActiveGameplayEffectHandle AppliedEffect = TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
-				UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Damage on %s"), *GetNameSafe(OtherActor));
+					const FActiveGameplayEffectHandle AppliedEffect = TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandleEff.Data.Get());
+					UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Damage on %s"), *GetNameSafe(OtherActor));
+				}
+				else {
+					UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] Failed to create GameplayEffectSpec"));
+				}
 			}
 			else {
-				UE_LOG(LogTemp,Error,TEXT("[FireballProjectile] Failed to create GameplayEffectSpec"));
+				UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] DamageEffect not found"));
+			}
+			// **********************************************************************Burn
+			if (BurnbuildupEffect) {
+				FGameplayEffectContextHandle BuildupContext = SourceASC->MakeEffectContext();
+				BuildupContext.AddSourceObject(this);
+				FGameplayEffectSpecHandle BuildupSpec = SourceASC->MakeOutgoingSpec(BurnbuildupEffect,1.0f,BuildupContext);
+				if (BuildupSpec.IsValid())
+				{
+					TargetASC->ApplyGameplayEffectSpecToSelf(*BuildupSpec.Data.Get());
+
+					UE_LOG(LogTemp,Warning,TEXT("[FireballProjectile] Burn buildup applied"));
+				}
+			}
+			else {
+				UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] BurnbuildupEffect not found"));
 			}
 		}
 		else {
-			UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] TatrgetASC or DamageEffect or SorceASC not found"));
+			UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] TatrgetASC or SorceASC not found"));
 		}
 	}
 	else {
@@ -89,9 +110,11 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 	Destroy();
 }
 
-void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime, TSubclassOf<UGameplayEffect> InDamageEffect) {
+void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime, TSubclassOf<UGameplayEffect> InDamageEffect, TSubclassOf<UGameplayEffect> InBurnbuildupEffect) {
 	Damage = InDamage;
 	DamageEffect = InDamageEffect;
+	BurnbuildupEffect = InBurnbuildupEffect;
+
 	ProjectileMovementComponent->InitialSpeed = InSpeed;
 	ProjectileMovementComponent->MaxSpeed = InSpeed;
 	ProjectileMovementComponent->Velocity = GetActorForwardVector() * InSpeed;

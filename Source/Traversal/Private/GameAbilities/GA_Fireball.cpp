@@ -49,7 +49,7 @@ void UGA_Fireball::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 
 	if (Projectile)
 	{
-		Projectile->InitializeProjectile(ProjectileData->Damage, ProjectileData->ProjectileSpeed, ProjectileData->ProjectileLifetime, ProjectileData->DamageEffect);
+		Projectile->InitializeProjectile(ProjectileData->Damage, ProjectileData->ProjectileSpeed, ProjectileData->ProjectileLifetime, ProjectileData->DamageEffect, ProjectileData->BurnBuildupEffect);
 	}
 
 	if (!Projectile) {
