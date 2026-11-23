@@ -59,6 +59,7 @@ ATraversalCharacter::ATraversalCharacter()
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarping"));
 	AtackComponent = CreateDefaultSubobject<UAtackComponent>(TEXT("AtackComponent"));
 	AttributeSet = CreateDefaultSubobject<UCombatAttributeSet>(TEXT("AttributeSet"));
+	StatusEffectComponent = CreateDefaultSubobject<UStatusEffectComponent>(TEXT("StatusEffectComponent"));
 
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
@@ -173,6 +174,7 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 	 }
 
 	 AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	 StatusEffectComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
 
 	 if (DamageBonusEffect) {
 		 FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
@@ -181,11 +183,7 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 
 		 if (Spec.IsValid()) {
 			 AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
-			 UE_LOG(LogTemp, Warning, TEXT("[Character] FireDamageBonus after GE: %f"),
-				 AbilitySystemComponent->GetNumericAttribute(
-					 UCombatAttributeSet::GetFireDamageBonusAttribute()
-				 )
-			 );
+			 UE_LOG(LogTemp, Warning, TEXT("[Character] FireDamageBonus after GE: %f"), AbilitySystemComponent->GetNumericAttribute(UCombatAttributeSet::GetFireDamageBonusAttribute()));
 		 }
 	 }
 

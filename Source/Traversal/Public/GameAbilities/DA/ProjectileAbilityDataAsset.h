@@ -34,4 +34,7 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fire")
     TSubclassOf<UGameplayEffect> BurnBuildupEffect;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fire")
+    TSubclassOf<UGameplayEffect> BurnBuildupDecayEffect;
 };

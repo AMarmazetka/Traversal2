@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
+#include "StatusEffectComponent.h"
 #include "TraversalComponent.h"
 #include "MotionWarpingComponent.h"
 #include "CombatAttributeSet.h"
@@ -93,18 +94,22 @@ protected:
 
 public:
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UStatusEffectComponent> StatusEffectComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TraversalComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UTraversalComponent> TraversalComponent;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr <UMotionWarpingComponent> MotionWarpingComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AtackComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCombatAttributeSet> AttributeSet;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AtackComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAtackComponent> AtackComponent;
+
+
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Attributes")
 	TSubclassOf<UGameplayEffect> ManaRegenerationEffect;
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Attributes")

@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "AbilitySystemInterface.h"
 #include "BaseEnemy.h"
+#include "StatusEffectComponent.h"
 #include "AbilitySystemComponent.h"
 #include "AtackGameplayTags.h"
 #include "GameplayEffect.h"
@@ -62,6 +63,11 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 
 		UAbilitySystemComponent* TargetASC = TargetASI->GetAbilitySystemComponent();
 		UAbilitySystemComponent* SourceASC = SourceASI->GetAbilitySystemComponent();
+
+		if (UStatusEffectComponent* StatusComponent = TargetEnemy->FindComponentByClass<UStatusEffectComponent>()) {
+			StatusComponent->SetBurnSourceASC(SourceASC);
+		}
+
 		if (TargetASC && SourceASC) {
 			// ********************************************************************Damage
 			if (DamageEffect) {
@@ -99,6 +105,20 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 			else {
 				UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] BurnbuildupEffect not found"));
 			}
+			// *********************************************************************BurnDacay
+			if (BurnBuildupDecayEffect) {
+				UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Decay Effect class exists"));
+				FGameplayEffectContextHandle DelayContext = SourceASC->MakeEffectContext();
+				DelayContext.AddSourceObject(this);
+				FGameplayEffectSpecHandle DelaySpec = SourceASC->MakeOutgoingSpec(BurnBuildupDecayEffect, 1.0f, DelayContext);
+				if (DelaySpec.IsValid()) {
+					TargetASC->ApplyGameplayEffectSpecToSelf(*DelaySpec.Data.Get());
+					UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Burn buildup decay applied"));
+				}
+			}
+			else {
+				UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] BurnBuildupDecayEffect is NULL"));
+			}
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("[FireballProjectile] TatrgetASC or SorceASC not found"));
@@ -110,11 +130,12 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 	Destroy();
 }
 
-void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime, TSubclassOf<UGameplayEffect> InDamageEffect, TSubclassOf<UGameplayEffect> InBurnbuildupEffect) {
+void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, float InLIfetime, TSubclassOf<UGameplayEffect> InDamageEffect, TSubclassOf<UGameplayEffect> InBurnbuildupEffect, TSubclassOf<UGameplayEffect> InBuildupDecayEffect) {
 	Damage = InDamage;
 	DamageEffect = InDamageEffect;
 	BurnbuildupEffect = InBurnbuildupEffect;
-
+	BurnBuildupDecayEffect = InBuildupDecayEffect;
+	
 	ProjectileMovementComponent->InitialSpeed = InSpeed;
 	ProjectileMovementComponent->MaxSpeed = InSpeed;
 	ProjectileMovementComponent->Velocity = GetActorForwardVector() * InSpeed;

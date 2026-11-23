@@ -5,10 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "StatusEffectComponent.h"
 #include "AbilitySystemComponent.h"
 #include "CombatAttributeSet.h"
 #include "AtackComponent.h"
 #include "BaseEnemy.generated.h"
+
+class UGameplayEffect;
 
 UCLASS()
 class TRAVERSAL_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface
@@ -36,13 +39,21 @@ public:
 	bool IsDead();
 
 
+
 public:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UAtackComponent> AtackComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UStatusEffectComponent> StatusEffectComponent;
+
 	UPROPERTY()
 	TObjectPtr<UCombatAttributeSet> AttributeSet;
-	UPROPERTY()
-	TObjectPtr<UAtackComponent> AtackComponent;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat|Burning")
+	TSubclassOf<UGameplayEffect> BurningEffect;
 
 protected:
 	bool bIsDead = false;

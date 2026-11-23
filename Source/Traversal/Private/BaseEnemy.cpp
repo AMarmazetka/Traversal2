@@ -15,6 +15,7 @@ ABaseEnemy::ABaseEnemy()
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AtackComponent = CreateDefaultSubobject<UAtackComponent>(TEXT("AtackComponent"));
 	AttributeSet = CreateDefaultSubobject<UCombatAttributeSet>(TEXT("AttributeSet"));
+	StatusEffectComponent = CreateDefaultSubobject<UStatusEffectComponent>(TEXT("StatusEffectComponent"));
 
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
@@ -29,6 +30,7 @@ void ABaseEnemy::BeginPlay()
 		return;
 	}
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	StatusEffectComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
 }
 
 // Called every frame
@@ -70,4 +72,8 @@ void ABaseEnemy::Die() {
 
 bool ABaseEnemy::IsDead() {
 	return bIsDead;
+}
+
+void TryIgnite(UAbilitySystemComponent* SourceASC) {
+
 }

@@ -49,7 +49,7 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	Super::PostGameplayEffectExecute(Data);
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[UCombatAttributeSet] CurrentMana: %.1f / %.1f"), GetMana(), GetMaxMana());
+		//UE_LOG(LogTemp, Warning, TEXT("[UCombatAttributeSet] CurrentMana: %.1f / %.1f"), GetMana(), GetMaxMana());
 	}
 
 	//
