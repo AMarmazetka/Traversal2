@@ -22,6 +22,8 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_GameplayCue_Damage_Fire, "GameplayCue.Fire");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Data_Damage, "Data.Damage")
 UE_DEFINE_GAMEPLAY_TAG(TAG_Data_BurnBuildup, "Data.BurnBuildup");
 
+UE_DEFINE_GAMEPLAY_TAG(TAG_GameplayCue_Fire_Burning, "GameplayCue.Fire.Burning");
+
 AtackGameplayTags::AtackGameplayTags()
 {
 }

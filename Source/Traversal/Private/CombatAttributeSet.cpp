@@ -43,18 +43,20 @@ void UCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute
 		NewValue = FMath::Max(NewValue, 0.0f);
 	}
 
+	if (Attribute == GetBurnBuildupAttribute()) {
+		NewValue = FMath::Clamp(NewValue, 0.0f, 100.0f);
+	}
+
 }
 
 void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) {
 	Super::PostGameplayEffectExecute(Data);
-	if (Data.EvaluatedData.Attribute == GetManaAttribute())
-	{
+	if (Data.EvaluatedData.Attribute == GetManaAttribute()){
 		//UE_LOG(LogTemp, Warning, TEXT("[UCombatAttributeSet] CurrentMana: %.1f / %.1f"), GetMana(), GetMaxMana());
 	}
 
 	//
-	if (Data.EvaluatedData.Attribute == GetBurnBuildupAttribute())
-	{
+	if (Data.EvaluatedData.Attribute == GetBurnBuildupAttribute()){
 		UE_LOG(LogTemp,Warning,TEXT("[CombatAttributeSet] BurnBuildup: %.1f / 100"),GetBurnBuildup());
 	}
 
@@ -77,8 +79,12 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 			}
 		}
 	}
-	else {
-		return;
+
+	if (Data.EvaluatedData.Attribute == GetBurnBuildupAttribute()) {
+		const float ClampedValue = FMath::Clamp(GetBurnBuildup(), 0.0f, 100.0f);
+		SetBurnBuildup(ClampedValue);
 	}
+
+	
 }
 

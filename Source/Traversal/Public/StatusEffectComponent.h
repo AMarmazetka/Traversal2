@@ -40,6 +40,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Status Effects")
 	TSubclassOf<UGameplayEffect> BurningEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
+	bool bRefreshBurningDurationOnReapply = false;
 
 		
 };

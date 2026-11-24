@@ -57,20 +57,21 @@ void UStatusEffectComponent::TryApplyBurning() {
 		return;
 	}
 
-	if (AbilitySystemComponent->HasMatchingGameplayTag(TAG_Status_Burning))
+	const bool bAlreadyBurning = AbilitySystemComponent->HasMatchingGameplayTag(TAG_Status_Burning);
+	if (bAlreadyBurning && !bRefreshBurningDurationOnReapply)
 	{
+		AbilitySystemComponent->SetNumericAttributeBase(UCombatAttributeSet::GetBurnBuildupAttribute(), 0.0f);
 		return;
 	}
 	const float FireResistence = CombatAttributeSet->GetFireResistance();
 	const float IgniteChance = 1.0f - FMath::Clamp(FireResistence, 0.0f, 100.0f) / 100.0f;
 	const float RandomValue = FMath::FRand();
 
-	UE_LOG(LogTemp,Warning,TEXT("[StatusEffectComponent] Ignite chance: %.2f | Random: %.2f"),IgniteChance,RandomValue);
-
 	if (RandomValue > IgniteChance) {
 		UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Ignition failed"));
+		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Ignition successful"));
+	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Ignition successful Ignite chance: %.2f | Random: %.2f"), IgniteChance, RandomValue);
 
 
 	const float BaseBurnDuration = 6.0f;
@@ -85,6 +86,7 @@ void UStatusEffectComponent::TryApplyBurning() {
 		UE_LOG(LogTemp, Error, TEXT("[StatusEffectComponent] Burn source ASC is invalid"));
 		return;
 	}
+
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	EffectContext.AddSourceObject(GetOwner());
 	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(BurningEffect, 1.0f, EffectContext);
@@ -94,30 +96,14 @@ void UStatusEffectComponent::TryApplyBurning() {
 	}
 	SpecHandle.Data->SetSetByCallerMagnitude(TAG_Data_Damage, 5.0f);
 	SpecHandle.Data->SetDuration(BurnDuration, true);
+	FActiveGameplayEffectHandle BurningHandle =AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Applying Burning. Duration: %.2f | Source: %s"), BurnDuration, *GetNameSafe(SourceASC->GetAvatarActor()));
 
-	//AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[StatusEffectComponent] Applying Burning. Duration: %.2f | Source: %s"),
-		BurnDuration,
-		*GetNameSafe(SourceASC->GetAvatarActor())
-	);
-
-	FActiveGameplayEffectHandle BurningHandle =
-		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(
-			*SpecHandle.Data.Get()
-		);
-
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("[StatusEffectComponent] Burning applied: %s | Handle valid: %s"),
-		*GetNameSafe(BurningEffect),
-		BurningHandle.IsValid() ? TEXT("true") : TEXT("false")
-	);
-
-	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Burning applied. Duration: %.1f"), BurnDuration);
+	AbilitySystemComponent->SetNumericAttributeBase(UCombatAttributeSet::GetBurnBuildupAttribute(), 0.0f);
+	if (BurningHandle.IsValid()) {
+		AbilitySystemComponent->SetNumericAttributeBase(UCombatAttributeSet::GetBurnBuildupAttribute(), 0.0f);
+		UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Brning reset to 0"));
+	}
 }
 
 void UStatusEffectComponent::OnBurnBuildupChanged(const FOnAttributeChangeData& Data) {
