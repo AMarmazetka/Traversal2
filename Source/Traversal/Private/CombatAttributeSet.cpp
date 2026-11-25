@@ -88,3 +88,19 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 	
 }
 
+void UCombatAttributeSet::InitializeAttributes()
+{
+	InitMaxHealth(DefaultMaxHealth);
+	InitHealth(DefaultHealth);
+
+	InitMaxMana(DefaultMaxMana);
+	InitMana(DefaultMana);
+
+	InitFireResistance(DefaultFireResistance);
+	InitBurnBuildup(0.0f);
+
+	InitFireDamageBonus(DefaultFireDamageBonus);
+	InitPhysicalDamageBonus(DefaultPhysicalDamageBonus);
+
+	InitIncomingDamage(0.0f);
+}

@@ -44,6 +44,10 @@ void AFireballProjectile::BeginPlay()
 }
 
 void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+	if (bHasHit) {
+		return;
+	}
+	bHasHit = true;
 	if (!OtherActor || OtherActor == GetOwner()) {
 		UE_LOG(LogTemp, Warning, TEXT("[FireballProjectile] Hit: %s"), *GetNameSafe(OtherActor));
 		Destroy();

@@ -52,7 +52,7 @@ void UStatusEffectComponent::InitializeWithAbilitySystem(UAbilitySystemComponent
 }
 
 void UStatusEffectComponent::TryApplyBurning() {
-	if (!AbilitySystemComponent.IsValid() || !CombatAttributeSet || !BurningEffect)
+	if (!AbilitySystemComponent.IsValid() || !CombatAttributeSet || !BurningData->BurningEffect)
 	{
 		return;
 	}
@@ -74,7 +74,7 @@ void UStatusEffectComponent::TryApplyBurning() {
 	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Ignition successful Ignite chance: %.2f | Random: %.2f"), IgniteChance, RandomValue);
 
 
-	const float BaseBurnDuration = 6.0f;
+	const float BaseBurnDuration = BurningData->BaseBurnDuration;
 	const float BurnDuration = BaseBurnDuration * IgniteChance;
 	if (BurnDuration <= 0.0f) {
 		return;
@@ -89,12 +89,12 @@ void UStatusEffectComponent::TryApplyBurning() {
 
 	FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 	EffectContext.AddSourceObject(GetOwner());
-	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(BurningEffect, 1.0f, EffectContext);
+	FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(BurningData->BurningEffect, 1.0f, EffectContext);
 	
 	if (!SpecHandle.IsValid()) {
 		return;
 	}
-	SpecHandle.Data->SetSetByCallerMagnitude(TAG_Data_Damage, 5.0f);
+	SpecHandle.Data->SetSetByCallerMagnitude(TAG_Data_Damage, BurningData->BurnDamage);
 	SpecHandle.Data->SetDuration(BurnDuration, true);
 	FActiveGameplayEffectHandle BurningHandle =AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] Applying Burning. Duration: %.2f | Source: %s"), BurnDuration, *GetNameSafe(SourceASC->GetAvatarActor()));
@@ -107,8 +107,12 @@ void UStatusEffectComponent::TryApplyBurning() {
 }
 
 void UStatusEffectComponent::OnBurnBuildupChanged(const FOnAttributeChangeData& Data) {
+	if (!BurningData){
+		return;
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("[StatusEffectComponent] BurnBuildup changed: %.1f -> %.1f"), Data.OldValue, Data.NewValue);
-	if (Data.NewValue >= 100.0f) {
+	if (Data.NewValue >= BurningData->BurnBuildupThreshold) {
 		TryApplyBurning();
 	}
 }

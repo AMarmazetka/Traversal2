@@ -61,7 +61,32 @@ public:
 	FGameplayAttributeData PhysicalDamageBonus;
 	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, PhysicalDamageBonus)
 
+
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultHealth = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultMaxHealth = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultMana = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultMaxMana = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultFireResistance = 50.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultFireDamageBonus = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Initial Attributes")
+	float DefaultPhysicalDamageBonus = 0.0f;
+
 	UCombatAttributeSet();
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	void InitializeAttributes();
 };

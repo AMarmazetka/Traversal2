@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "AbilitySystemComponent.h"
 #include "CombatAttributeSet.h"
+#include "GameAbilities/DA/BurningDataAsset.h"
 #include "StatusEffectComponent.generated.h"
 
 
@@ -38,8 +39,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Status Effects")
-	TSubclassOf<UGameplayEffect> BurningEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
+	TObjectPtr<UBurningDataAsset> BurningData;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
 	bool bRefreshBurningDurationOnReapply = false;
 

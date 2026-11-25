@@ -30,6 +30,13 @@ void ABaseEnemy::BeginPlay()
 		return;
 	}
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	if (AttributeSet){
+		AttributeSet->InitializeAttributes();
+	}
+	else{
+		UE_LOG(LogTemp, Error, TEXT("[BaseEnemy] AttributeSet is null"));
+	}
+
 	StatusEffectComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
 }
 

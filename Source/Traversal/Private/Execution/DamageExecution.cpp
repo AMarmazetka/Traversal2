@@ -12,9 +12,11 @@ namespace DamageStatics {
 	struct FDamageStatics {
 		FGameplayEffectAttributeCaptureDefinition FireDamageBonusDef;
 		FGameplayEffectAttributeCaptureDefinition FireResistanceDef;
+		FGameplayEffectAttributeCaptureDefinition HealthDef;
 		FDamageStatics() {
 			FireDamageBonusDef = FGameplayEffectAttributeCaptureDefinition(UCombatAttributeSet::GetFireDamageBonusAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 			FireResistanceDef = FGameplayEffectAttributeCaptureDefinition(UCombatAttributeSet::GetFireResistanceAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
+			HealthDef = FGameplayEffectAttributeCaptureDefinition(UCombatAttributeSet::GetHealthAttribute(), EGameplayEffectAttributeCaptureSource::Target, false);
 		}
 	};
 
@@ -27,16 +29,20 @@ namespace DamageStatics {
 UDamageExecution::UDamageExecution() {
 	RelevantAttributesToCapture.Add(DamageStatics::Get().FireDamageBonusDef);
 	RelevantAttributesToCapture.Add(DamageStatics::Get().FireResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics::Get().HealthDef);
 }
 
-void UDamageExecution::Execute_Implementation(
-    const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-    FGameplayEffectCustomExecutionOutput& OutExecutionOutput
-) const
-{
+void UDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const {
     const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+	float TargetHealth = 0.0f;
 	const float BaseDamage = Spec.GetSetByCallerMagnitude(TAG_Data_Damage, false, 0.0f);
     FAggregatorEvaluateParameters EvaluationParameters;
+
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().HealthDef, EvaluationParameters, TargetHealth);
+	if (TargetHealth <= 0.0f) {
+		UE_LOG(LogTemp, Warning, TEXT("[FireDamageExecution] Target is dead. Damage ignored."));
+		return;
+	}
 
     float FireDamageBonus = 0.3f;
     float FireResistance = 50.0f;

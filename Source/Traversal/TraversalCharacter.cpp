@@ -174,6 +174,12 @@ void ATraversalCharacter::Atack(const FInputActionValue& Value) {
 	 }
 
 	 AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	 if (AttributeSet){
+		 AttributeSet->InitializeAttributes();
+	 }
+	 else{
+		 UE_LOG(LogTemp, Error, TEXT("[TraversalCharacter] AttributeSet is null"));
+	 }
 	 StatusEffectComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
 
 	 if (DamageBonusEffect) {

@@ -41,6 +41,7 @@ protected:
 private:
 	TSubclassOf<UGameplayEffect> DamageEffect;
 	TSubclassOf<UGameplayEffect> BurnbuildupEffect;
+	bool bHasHit = false;
 
 	UPROPERTY()
 	TSubclassOf<UGameplayEffect> BurnBuildupDecayEffect;

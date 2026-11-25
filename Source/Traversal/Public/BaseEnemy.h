@@ -47,8 +47,7 @@ public:
 	TObjectPtr<UAtackComponent> AtackComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UStatusEffectComponent> StatusEffectComponent;
-
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCombatAttributeSet> AttributeSet;
 
 
