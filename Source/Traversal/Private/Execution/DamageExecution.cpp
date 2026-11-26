@@ -38,26 +38,38 @@ void UDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const float BaseDamage = Spec.GetSetByCallerMagnitude(TAG_Data_Damage, false, 0.0f);
     FAggregatorEvaluateParameters EvaluationParameters;
 
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().HealthDef, EvaluationParameters, TargetHealth);
+	const bool bHasHealth =ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().HealthDef,EvaluationParameters,TargetHealth);
+	if (!bHasHealth){
+		UE_LOG(LogTemp, Error,TEXT("[FireDamageExecution] Failed to capture target Health."));
+		return;
+	}
 	if (TargetHealth <= 0.0f) {
 		UE_LOG(LogTemp, Warning, TEXT("[FireDamageExecution] Target is dead. Damage ignored."));
 		return;
 	}
 
-    float FireDamageBonus = 0.3f;
-    float FireResistance = 50.0f;
+    float FireDamageBonus = 0.0f; //Default 
+    float FireResistance = 0.0f;
 
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().FireDamageBonusDef, EvaluationParameters, FireDamageBonus);
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().FireResistanceDef, EvaluationParameters, FireResistance);
+	const bool bHasFireResistance = ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().FireResistanceDef, EvaluationParameters, FireResistance);
+	const bool bHasFireDamageBonus = ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics::Get().FireDamageBonusDef, EvaluationParameters, FireDamageBonus);
+
+	//*********************************************************
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("[FireDamageExecution] Captured FireDamageBonus: %f"),
+		FireDamageBonus
+	);
+	if (!bHasFireDamageBonus || !bHasFireResistance){
+		UE_LOG(LogTemp, Error,TEXT("[FireDamageExecution] Failed to capture combat attributes."));
+		return;
+	}
 
 	const float BonusMultiplier = 1.0f + FireDamageBonus;
 	const float ResistanceMultiplier = 1.0f - FMath::Clamp(FireResistance, 0.0f, 100.0f) / 100;
 	const float FinalDamage = BaseDamage * BonusMultiplier * ResistanceMultiplier;
 
-
-
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UCombatAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, FinalDamage));
-
-
     UE_LOG( LogTemp, Warning, TEXT("[FireDamageExecution] DamageBonus: %f | FireResistance: %f"), FireDamageBonus, FireResistance );
 }

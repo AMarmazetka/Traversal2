@@ -55,11 +55,11 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	FGameplayAttributeData FireDamageBonus;
-	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, FireDamageBonus)
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, FireDamageBonus);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	FGameplayAttributeData PhysicalDamageBonus;
-	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, PhysicalDamageBonus)
+	ATTRIBUTE_ACCESSORS(UCombatAttributeSet, PhysicalDamageBonus);
 
 
 

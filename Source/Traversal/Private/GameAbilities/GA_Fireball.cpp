@@ -32,8 +32,7 @@ void UGA_Fireball::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 			return;
 		}
 
-		if (!ProjectileData)
-		{
+		if (!ProjectileData){
 			UE_LOG(LogTemp, Error, TEXT("[GA_Fireball] ProjectileData is not assigned"));
 			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 			return;
@@ -47,8 +46,7 @@ void UGA_Fireball::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	SpawnParameters.Instigator = Cast<APawn>(AvatarActor);
 	AFireballProjectile* Projectile = AvatarActor->GetWorld()->SpawnActor<AFireballProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, SpawnParameters);
 
-	if (Projectile)
-	{
+	if (Projectile){
 		Projectile->InitializeProjectile(ProjectileData->Damage, ProjectileData->ProjectileSpeed, ProjectileData->ProjectileLifetime, ProjectileData->DamageEffect, ProjectileData->BurnBuildupEffect, ProjectileData->BurnBuildupDecayEffect);
 	}
 

@@ -79,7 +79,7 @@ void AFireballProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AAc
 				FGameplayEffectContextHandle EffectContext = SourceASC->MakeEffectContext();
 				EffectContext.AddSourceObject(this);
 				FGameplayEffectSpecHandle SpecHandleEff = SourceASC->MakeOutgoingSpec(DamageEffect, 1.0f, EffectContext);
-
+				UE_LOG(LogTemp, Warning, TEXT("[Fireball] Source FireDamageBonus BEFORE SPEC2: %f"), SourceASC->GetNumericAttribute(UCombatAttributeSet::GetFireDamageBonusAttribute()));
 				if (SpecHandleEff.IsValid()) {
 					SpecHandleEff.Data->SetSetByCallerMagnitude(TAG_Data_Damage, Damage);
 					SpecHandleEff.Data->AddDynamicAssetTag(TAG_Damage_Fire);
@@ -139,6 +139,8 @@ void AFireballProjectile::InitializeProjectile(float InDamage, float InSpeed, fl
 	DamageEffect = InDamageEffect;
 	BurnbuildupEffect = InBurnbuildupEffect;
 	BurnBuildupDecayEffect = InBuildupDecayEffect;
+
+	//UE_LOG(LogTemp, Warning, TEXT("[Fireball] Source FireDamageBonus BEFORE SPEC1: %f"), SourceASC->GetNumericAttribute(UCombatAttributeSet::GetFireDamageBonusAttribute()));
 	
 	ProjectileMovementComponent->InitialSpeed = InSpeed;
 	ProjectileMovementComponent->MaxSpeed = InSpeed;

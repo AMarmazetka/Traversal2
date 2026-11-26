@@ -7,17 +7,6 @@
 
 
 UCombatAttributeSet::UCombatAttributeSet() {
-	InitHealth(100.f);
-	InitMaxHealth(100.f);
-
-	InitMana(100.f);
-	InitMaxMana(100.f);
-
-	InitFireResistance(50.f);
-	InitBurnBuildup(0.0f);
-
-	InitFireDamageBonus(0.0f);
-	InitPhysicalDamageBonus(0.0f);
 }
 
 void UCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) {
@@ -90,17 +79,24 @@ void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 
 void UCombatAttributeSet::InitializeAttributes()
 {
-	InitMaxHealth(DefaultMaxHealth);
-	InitHealth(DefaultHealth);
+	const float SafeMaxHealth = FMath::Max(0.0f, DefaultMaxHealth);
+	const float SafeMaxMana = FMath::Max(0.0f, DefaultMaxMana);
 
-	InitMaxMana(DefaultMaxMana);
-	InitMana(DefaultMana);
+	const float SafeHealth = FMath::Clamp(DefaultHealth, 0.0f, SafeMaxHealth);
+	const float SafeMana = FMath::Clamp(DefaultMana, 0.0f, SafeMaxMana);
 
-	InitFireResistance(DefaultFireResistance);
+	InitMaxHealth(SafeMaxHealth);
+	InitHealth(SafeHealth);
+
+	InitMaxMana(SafeMaxMana);
+	InitMana(SafeMana);
+
+	InitFireResistance(FMath::Clamp(DefaultFireResistance, 0.0f, 100.0f));
+
 	InitBurnBuildup(0.0f);
 
-	InitFireDamageBonus(DefaultFireDamageBonus);
-	InitPhysicalDamageBonus(DefaultPhysicalDamageBonus);
+	InitFireDamageBonus(FMath::Max(0.0f, DefaultFireDamageBonus));
+	InitPhysicalDamageBonus(FMath::Max(0.0f, DefaultPhysicalDamageBonus));
 
 	InitIncomingDamage(0.0f);
 }

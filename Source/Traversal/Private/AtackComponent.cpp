@@ -52,8 +52,7 @@ void UAtackComponent::Atack() {
 
 void UAtackComponent::InitializeAbilitySystem(UAbilitySystemComponent* InASC)
 {
-	if (!InASC)
-	{
+	if (!InASC){
 		UE_LOG(LogTemp, Error, TEXT("AtackComponent: ASC is null"));
 		return;
 	}
@@ -65,16 +64,13 @@ void UAtackComponent::InitializeAbilitySystem(UAbilitySystemComponent* InASC)
 
 void UAtackComponent::GrantAbilities()
 {
-	if (!AbilitySystemComponent || bAbilitiesGranted)
-	{
+	if (!AbilitySystemComponent || bAbilitiesGranted){
 		return;
 	}
-	if (!GetOwner() || !GetOwner()->HasAuthority())
-	{
+	if (!GetOwner() || !GetOwner()->HasAuthority()){
 		return;
 	}
-	if (!FireBall)
-	{
+	if (!FireBall){
 		UE_LOG(LogTemp, Warning, TEXT("FireballAbility is not assigned"));
 		return;
 	}
